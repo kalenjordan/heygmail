@@ -197,21 +197,6 @@
         @include('footer')
     </div>
 
-    <script>
-        pageMethods = {
-            toggleAccountMenu: function() {
-                this.showAccountMenu = ! this.showAccountMenu;
-            },
-            toggleMobileMenu: function() {
-                this.showMobileMenu = ! this.showMobileMenu;
-            }
-        };
-
-        pageData = {
-            showAccountMenu: false,
-            showMobileMenu: false,
-        };
-    </script>
     @yield('scripts')
     <script src="{{ mix('/js/app.js') }}"></script>
 </body>

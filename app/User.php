@@ -2,38 +2,32 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
+class User extends Airtable
 {
-    use Notifiable;
+    protected $table = "Users";
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    public function email()
+    {
+        return isset($this->fields->{'Email'}) ? $this->fields->{'Email'} : null;
+    }
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public function name()
+    {
+        return isset($this->fields->{'Name'}) ? $this->fields->{'Name'} : null;
+    }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function phone()
+    {
+        return isset($this->fields->{'Phone'}) ? $this->fields->{'Phone'} : null;
+    }
+
+    public function avatar()
+    {
+        return isset($this->fields->{'Avatar'}[0]->url) ? $this->fields->{'Avatar'}[0]->url : null;
+    }
+
+    public function thingsTheyUse()
+    {
+        return isset($this->fields->{'Things They Use'}) ? $this->fields->{'Things They Use'} : [];
+    }
 }
