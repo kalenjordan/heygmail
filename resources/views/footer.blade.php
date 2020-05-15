@@ -1,4 +1,4 @@
-<div class="bg-gray-800">
+<div class="bg-gray-800" :class="{ 'opacity-0' : focusMode }">
     <div class="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
             <div class="grid grid-cols-2 gap-8 xl:col-span-2">
@@ -26,6 +26,17 @@
                             <li class="mt-4">
                                 <a href="#" class="text-base leading-6 text-gray-300 hover:text-white">
                                     Insights
+                                </a>
+                            </li>
+                            <li class="mt-4">
+                                <a href="javascript://" @click="toggleFocusMode" v-shortkey="['f']" @shortkey="toggleFocusMode()"
+                                   class="text-base leading-6 text-gray-300 hover:text-white" v-tooltip="'F key'">
+                                    <template v-if="!focusMode">
+                                        Enable focus mode
+                                    </template>
+                                    <template v-else>
+                                        Disable focus mode
+                                    </template>
                                 </a>
                             </li>
                         </ul>
@@ -124,7 +135,7 @@
                         The latest news, articles, and resources, sent to your inbox weekly.
                     </p>
                     <div class="mt-4 sm:flex sm:max-w-md">
-                        <input aria-label="Email address" type="email" ref="email" required class="appearance-none w-full px-5 py-3 border border-transparent text-base leading-6 rounded-md text-gray-900 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 transition duration-150 ease-in-out" placeholder="Enter your email" />
+                        <input aria-label="Email address" type="email" ref="email" required class="appearance-none w-full px-5 py-3 border border-transparent text-base leading-6 rounded-md text-gray-900 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 transition duration-150 ease-in-out" placeholder="Enter your email"/>
                         <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
                             <button @click="subscribe" class="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:bg-indigo-400 transition duration-150 ease-in-out">
                                 Subscribe

@@ -16,7 +16,7 @@
     {{--<link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>--}}
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="bg-gray-50">
         @if (isset($error) && $error == 'not_logged_in')
             <div class="rounded-md bg-yellow-50 p-4">
                 <div class="flex">
@@ -61,7 +61,7 @@
             </div>
         @endif
 
-        <div class="relative bg-gray-50 overflow-hidden">
+        <div class="relative overflow-hidden">
             <div class="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
                 <div class="relative h-full max-w-screen-xl mx-auto">
                     <svg class="absolute left-full transform -translate-y-3/4 -translate-x-1/4 md:-translate-y-1/2 lg:-translate-x-1/2" width="404" height="784" fill="none" viewBox="0 0 404 784">
@@ -76,7 +76,7 @@
             </div>
 
             <div class="relative pt-6 pb-12 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
-                <div class="max-w-screen-xl mx-auto px-4 sm:px-6">
+                <div class="max-w-screen-xl mx-auto px-4 sm:px-6" :class="{ 'opacity-0' : focusMode }">
                     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
