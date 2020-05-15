@@ -24,4 +24,23 @@ class Util
         return env('LOGO_SVG');
     }
 
+    /**
+     * @param $user User
+     *
+     * @return bool
+     */
+    public static function isAdmin($user)
+    {
+        if (! $user) {
+            return false;
+        }
+
+        $adminEmails = explode(',', env('ADMIN_EMAILS'));
+        return (in_array($user->email(), $adminEmails));
+    }
+
+    public static function airtableUrl()
+    {
+        return "https://airtable.com/" . env('AIRTABLE_BASE_ID');
+    }
 }

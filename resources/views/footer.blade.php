@@ -39,6 +39,15 @@
                                     </template>
                                 </a>
                             </li>
+                            @if (Util::isAdmin($user))
+                                <li class="mt-4">
+                                    <a href="{{ Util::airtableUrl() }}" ref="airtable" target="_blank"
+                                       v-shortkey="['shift', 'a']" @shortkey="openAirtable" v-tooltip="'Shift + A'"
+                                       class="text-base leading-6 text-gray-300 hover:text-white">
+                                        Airtable
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                     <div class="mt-12 md:mt-0">
@@ -179,7 +188,7 @@
                 </a>
             </div>
             <p class="mt-8 text-base leading-6 text-gray-400 md:mt-0 md:order-1">
-                &copy; 2020 Workflow, Inc. All rights reserved.
+                &copy; 2020. All rights reserved.
             </p>
         </div>
     </div>

@@ -27,6 +27,9 @@ const app = new Vue({
         },
         toggleFocusMode() {
             this.focusMode = ! this.focusMode;
+        },
+        openAirtable() {
+            this.$refs.airtable.click();
         }
     }
 });

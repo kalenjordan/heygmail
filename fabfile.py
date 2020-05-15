@@ -16,7 +16,7 @@ def printUsageAndExit():
 	print 'Example: fab deploy'
 	sys.exit(0)
 
-remoteDocumentRoot = '/home/forge/starter'
+remoteDocumentRoot = '/home/forge/starter.kalenjordan.com'
 remoteSkinPath = remoteDocumentRoot + '/public'
 remoteSkinPathAssets = remoteDocumentRoot + '/public/assets'
 
@@ -33,10 +33,10 @@ def deploy():
 		run('composer install --no-dev')
 
 	with cd(remoteDocumentRoot):
-		print(green("4. Running npm"))
+		print(green("4. Running npm install"))
 		run('npm install')
 
 	with cd(remoteDocumentRoot):
-		print(green("4. Running npm"))
+		print(green("4. Running npm run "))
 		run('npm run prod')
 
