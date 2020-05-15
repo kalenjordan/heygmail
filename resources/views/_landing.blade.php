@@ -6,9 +6,8 @@
 
 <html>
 <head>
-    {{--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">--}}
-    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     @yield('title')
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">

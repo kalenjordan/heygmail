@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "@tailwindcss/ui": "^0.3.0",
         "v-tooltip": "^2.0.3",
         "vue-shortkey": "^3.1.7"
     }
