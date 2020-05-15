@@ -97,7 +97,7 @@
                     <div class="flex items-center px-5">
                         <div class="flex-shrink-0">
                             <img class="h-10 w-10 rounded-full"
-                                 src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim($user->email()))) }}" alt=""/>
+                                 src="{{ $user->avatar() }}" alt=""/>
                         </div>
                         <div class="ml-3">
                             <div class="text-base font-medium leading-none text-white">
