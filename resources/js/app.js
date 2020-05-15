@@ -2,8 +2,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import VTooltip from 'v-tooltip'
-window.Vue.use(VTooltip);
+window.Vue.use(require('v-tooltip'));
 window.Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] });
 
 const files = require.context('./', true, /\.vue$/i);
