@@ -4,7 +4,7 @@ window.Vue = require('vue');
 
 import VTooltip from 'v-tooltip'
 window.Vue.use(VTooltip);
-window.Vue.use(require('vue-shortkey'))
+window.Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] });
 
 const files = require.context('./', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
