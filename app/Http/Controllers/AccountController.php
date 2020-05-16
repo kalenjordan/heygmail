@@ -67,7 +67,12 @@ class AccountController extends Controller
             return redirect("/auth?redirect=" . $request->path());
         }
 
-        $things = (new Thing())->getRecords();
+        $params = array(
+            "filterByFormula" => "{User ID} = '{$user->id()}'",
+            "sort"            => [['field' => 'Created', 'direction' => "desc"]],
+        );
+
+        $things = (new Thing())->getRecords($params);
 
         return view('account.thing-list', [
             'error'   => $request->input('error'),
