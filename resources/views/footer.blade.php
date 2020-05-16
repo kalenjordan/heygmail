@@ -29,6 +29,13 @@
                                 </a>
                             </li>
                             <li class="mt-4">
+                                <a href="javascript://" @click="showKeyboardShortcuts"
+                                   v-shortkey="['/']" @shortkey="showKeyboardShortcuts()" v-tooltip="'/'"
+                                   class="text-base leading-6 text-gray-300 hover:text-white">
+                                    Keyboard shortcuts
+                                </a>
+                            </li>
+                            <li class="mt-4">
                                 <a href="javascript://" @click="toggleFocusMode" v-shortkey="['f']" @shortkey="toggleFocusMode()"
                                    class="text-base leading-6 text-gray-300 hover:text-white" v-tooltip="'F key'">
                                     <template v-if="!focusMode">
@@ -41,8 +48,8 @@
                             </li>
                             @if (Util::isAdmin($user))
                                 <li class="mt-4">
-                                    <a href="{{ Util::airtableUrl() }}" ref="airtable" target="_blank"
-                                       v-shortkey="['shift', 'a']" @shortkey="openAirtable" v-tooltip="'Shift + A'"
+                                    <a href="{{ Util::airtableUrl() }}" target="_blank"
+                                       v-shortkey="['shift', 'a']" @shortkey="clickLink($event, 'A')" v-tooltip="'Shift + A'"
                                        class="text-base leading-6 text-gray-300 hover:text-white">
                                         Airtable
                                     </a>

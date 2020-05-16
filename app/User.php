@@ -16,6 +16,11 @@ class User extends Airtable
         return isset($this->fields->{'Name'}) ? $this->fields->{'Name'} : null;
     }
 
+    public function about()
+    {
+        return isset($this->fields->{'About'}) ? $this->fields->{'About'} : null;
+    }
+
     public function phone()
     {
         return isset($this->fields->{'Phone'}) ? $this->fields->{'Phone'} : null;

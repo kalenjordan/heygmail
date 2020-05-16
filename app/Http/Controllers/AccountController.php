@@ -19,7 +19,7 @@ class AccountController extends Controller
     {
         $user = $request->session()->get('user');
         if (!$user) {
-            return redirect("/?error=not_logged_in");
+            return redirect("/auth?redirect=" . $request->path());
         }
 
         return view('settings', ['user' => $user]);
@@ -41,7 +41,8 @@ class AccountController extends Controller
         }
 
         $user->save([
-            'Name' => $request->input('name')
+            'Name' => $request->input('name'),
+            'About' => $request->input('about'),
         ]);
 
         return view('settings', ['user' => $user]);

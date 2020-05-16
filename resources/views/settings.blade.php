@@ -48,9 +48,21 @@
                             </label>
                             <div class="mt-1 rounded-md shadow-sm">
                                 <input name="name" id="name" type="text" value="{{ $user->name() }}"
-                                       v-shortkey.focus="['e']"
                                        class="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"/>
                             </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="about" class="block text-sm font-medium leading-5 text-gray-700">
+                                About
+                            </label>
+                            <div class="mt-1 rounded-md shadow-sm">
+                                <textarea class="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                          name="about" id="about" rows="3">{{ $user->about() }}</textarea>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">
+                                Copy and paste a list of your tasks in here.
+                            </p>
                         </div>
 
                     </div>
@@ -65,6 +77,7 @@
                     </span>
                     <span class="ml-3 inline-flex rounded-md shadow-sm">
                         <input type="submit" value="Save"
+                               v-shortkey="['meta', 'enter']" @shortkey="clickLink($event, '', false)" v-tooltip="'Cmd + Enter'"
                                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
                     </span>
                 </div>
