@@ -1,5 +1,6 @@
 <?php
-/** @var \App\Util */
+/** @var \App\User $user */
+/** @var \App\User $teamMember */
 ?>
 
 @extends('_landing')
@@ -30,6 +31,125 @@
                         Second thing!
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8 bg-gray-100 mt-16">
+        <div class="relative max-w-7xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl leading-9 tracking-tight font-extrabold text-gray-900 sm:text-4xl sm:leading-10">
+                    Team
+                </h2>
+                {{--<p class="mt-3 max-w-2xl mx-auto text-xl leading-7 text-gray-500 sm:mt-4">--}}
+                {{--Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa libero labore natus atque, ducimus sed.--}}
+                {{--</p>--}}
+            </div>
+            <div class="mt-12 grid gap-5 max-w-lg mx-auto lg:grid-cols-3 lg:max-w-none">
+                @foreach ($teamMembers as $teamMember)
+                    <div class="flex flex-col rounded-lg shadow-lg overflow-hidden">
+                        <div class="flex-1 bg-white p-6 flex flex-col justify-between">
+                            <div class="flex-1">
+                                <div class="mb-2">
+                                    <img src="{{ $teamMember->avatar() }}" class="w-20 h-20 rounded-full">
+                                </div>
+                                <h3 class="mt-2 text-xl leading-7 font-semibold text-gray-900">
+                                    {{ $teamMember->name() }}
+                                </h3>
+                                <p class="mt-3 text-base leading-6 text-gray-500">
+                                    {{ $teamMember->about() }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <div class="py-12 bg-white">
+        <div class="max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                {{--<p class="text-base leading-6 text-indigo-600 font-semibold tracking-wide uppercase">How it works</p>--}}
+                <h3 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
+                    Here's how it works
+                </h3>
+                <p class="mt-4 max-w-2xl text-xl leading-7 text-gray-500 lg:mx-auto">
+                Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum cupiditate veritatis in accusamus quisquam.
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <ul class="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10">
+                    <li>
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                                    @include('svg.icon-eye', ['classes' => 'h-6 w-6'])
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">
+                                    1. Do the first thing!
+                                </h5>
+                                <p class="mt-2 text-base leading-6 text-gray-500">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-10 md:mt-0">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                                    @include('svg.icon-eye', ['classes' => 'h-6 w-6'])
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">
+                                    2. Do the second thing!
+                                </h5>
+                                <p class="mt-2 text-base leading-6 text-gray-500">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-10 md:mt-0">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                                    @include('svg.icon-eye', ['classes' => 'h-6 w-6'])
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">
+                                    3. Do the first thing!
+                                </h5>
+                                <p class="mt-2 text-base leading-6 text-gray-500">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-10 md:mt-0">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                                    @include('svg.icon-eye', ['classes' => 'h-6 w-6'])
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">
+                                    4. Do the fourth thing!
+                                </h5>
+                                <p class="mt-2 text-base leading-6 text-gray-500">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

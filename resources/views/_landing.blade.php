@@ -74,7 +74,7 @@
                 </div>
             </div>
 
-            <div class="relative pt-6 pb-12 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
+            <div class="relative">
                 <div class="max-w-screen-xl mx-auto px-4 sm:px-6" :class="{ 'opacity-0' : focusMode }">
                     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
