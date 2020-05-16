@@ -16,29 +16,22 @@
 </head>
 <body>
     <div id="app" class="bg-gray-50">
-        @if (isset($error) && $error == 'not_logged_in')
-            <div class="rounded-md bg-yellow-50 p-4">
+        @if (isset($error))
+            <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
+                        @include('svg.icon-warning', ['classes' => 'h-5 w-5 text-red-400'])
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-sm leading-5 font-medium text-yellow-800">
-                            Please login
+                        <h3 class="text-sm leading-5 font-medium text-red-800">
+                            {{ $error }}
                         </h3>
-                        <div class="mt-2 text-sm leading-5 text-yellow-700">
-                            <p>
-                                You tried to access a page on the site without being logged in
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
         @endif
 
-        @if (isset($success) && $success == 'logged_out')
+        @if (isset($success))
             <div class="rounded-md bg-green-50 p-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -48,13 +41,8 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm leading-5 font-medium text-green-800">
-                            You're signed out!
+                            {{ $success }}
                         </h3>
-                        <div class="mt-2 text-sm leading-5 text-green-700">
-                            <p>
-                                Come back again soon! 😉
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -74,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="relative">
+            <div class="relative pt-6">
                 <div class="max-w-screen-xl mx-auto px-4 sm:px-6" :class="{ 'opacity-0' : focusMode }">
                     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">

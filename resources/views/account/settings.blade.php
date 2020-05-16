@@ -2,7 +2,7 @@
 /** @var \App\User $user */
 ?>
 
-@extends('_app')
+@extends('account._app')
 
 @section('title')
     <title>Settings | {{ env('APP_NAME') }}</title>
