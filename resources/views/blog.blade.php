@@ -1,7 +1,5 @@
 <?php
 /** @var \App\User $user */
-/** @var \App\Testimonial $testimonial */
-/** @var \App\Testimonial $firstTestimonial */
 /** @var \App\Blog $blog */
 ?>
 
