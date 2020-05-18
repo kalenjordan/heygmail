@@ -1,12 +1,14 @@
 <script>
     export default {
-        props: ['apiKey'],
+        props: ['apiKey', 'locationProp'],
         mounted() {
-            // console.log('mounted');
+            this.location = this.locationProp;
+            console.log('location: ' + this.location);
         },
         methods: {
             shareLocation() {
                 console.log('getting position from browser...');
+                this.loading = true;
                 navigator.geolocation.getCurrentPosition((position) => {
                     let latitude = position.coords.latitude;
                     let longitude = position.coords.longitude;
@@ -17,16 +19,25 @@
 
                     console.log('geolocating from api: ' + url);
                     axios.get(url).then((response) => {
-                        this.setLocation(response.location);
+                        console.log('location from api: ' + response.data.location);
+                        this.location = response.data.location;
+                        this.loading = false;
                     });
                 }, function() {
                     console.log('error');
                 });
-            }
+            },
+            deleteLocation() {
+                let url = '/api/geocode-delete?api_key=' + this.apiKey;
+                axios.get(url).then((response) => {
+                    this.location = null;
+                });
+            },
         },
         data() {
             return {
-                // email: null
+                location: null,
+                loading: false
             }
         }
     }

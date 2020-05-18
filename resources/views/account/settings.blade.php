@@ -66,25 +66,34 @@
                             </p>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="email" class="block text-sm font-medium leading-5 text-gray-700">Location</label>
-                            <div class="mt-3 inline-block relative ">
-                                @if ($user->location())
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        @include('svg.icon-location', ['classes' => 'h-5 w-5 text-gray-400'])
-                                    </div>
-                                    <span class="pl-10 form-input items-center px-3 rounded-l-md border border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
-                                        {{ $user->location() }}
-                                    </span>
-                                @else
-                                    <location-button inline-template :api-key="'{{ $user->apiKey() }}'">
+                        <location-button inline-template :api-key="'{{ $user->apiKey() }}'" location-prop="{{ $user->location() }}">
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700">Location</label>
+                                <div class="mt-3 inline-block relative ">
+                                    <template v-if="location">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            @include('svg.icon-location', ['classes' => 'h-5 w-5 text-gray-400'])
+                                        </div>
+                                        <span class="pl-10 form-input items-center px-3 rounded-l-md border border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                            @{{ location }}
+                                            <a href="javascript://" class="text-indigo-600" @click="deleteLocation" v-tooltip="'Delete location'">
+                                                @include('svg.icon-minus', ['classes' => 'h-5 w-5 inline'])
+                                            </a>
+                                        </span>
+
+                                        <span class="">
+                                        </span>
+                                    </template>
+                                    <template v-else>
                                         <a href="javascript://" @click="shareLocation"
                                            class="py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                                            Share location</a>
-                                    </location-button>
-                                @endif
+                                            Share location
+                                            <template v-if="loading">...</template>
+                                        </a>
+                                    </template>
+                                </div>
                             </div>
-                        </div>
+                        </location-button>
 
                     </div>
                 </div>

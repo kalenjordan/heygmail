@@ -99,6 +99,38 @@ class ApiController extends Controller
     /**
      * @param Request $request
      *
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function geocodeDelete(Request $request)
+    {
+        try {
+            return $this->_geocodeDelete($request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function _geocodeDelete(Request $request)
+    {
+        $user = $this->_loadFromApiKey($request);
+        $user->save([
+            'Location' => null,
+        ]);
+
+        return ['success' => true];
+    }
+
+    /**
+     * @param Request $request
+     *
      * @return User
      * @throws \Exception
      */
