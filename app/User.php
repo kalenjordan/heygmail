@@ -31,4 +31,14 @@ class User extends Airtable
     {
         return isset($this->fields->{'Avatar'}[0]->url) ? $this->fields->{'Avatar'}[0]->url : null;
     }
+
+    public function location()
+    {
+        return isset($this->fields->{'Location'}) ? $this->fields->{'Location'} : null;
+    }
+
+    public function apiKey()
+    {
+        return isset($this->fields->{'API Key'}) ? $this->fields->{'API Key'} : null;
+    }
 }

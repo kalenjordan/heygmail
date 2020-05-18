@@ -23,6 +23,8 @@ class AccountController extends Controller
             return redirect("/auth?redirect=" . $request->path());
         }
 
+        $user = (new User())->load($user->id());
+
         return view('account.settings', [
             'error'   => $request->input('error'),
             'success' => $request->input('success'),

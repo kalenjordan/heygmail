@@ -24,6 +24,11 @@ class Util
         return env('LOGO_SVG');
     }
 
+    public static function googleGeocodingApiKey()
+    {
+        return env('GOOGLE_GEOCODING_API');
+    }
+
     /**
      * @param $user User
      *
@@ -43,4 +48,6 @@ class Util
     {
         return "https://airtable.com/" . env('AIRTABLE_BASE_ID');
     }
+
+
 }
