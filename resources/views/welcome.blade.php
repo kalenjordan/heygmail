@@ -153,4 +153,30 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-gray-50 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+        <div class="relative max-w-lg mx-auto lg:max-w-7xl">
+            <div class="grid gap-16 lg:grid-cols-3 lg:col-gap-5 lg:row-gap-12">
+                @foreach ($blogs as $blog)
+                    <div>
+                        <div>
+                            <a href="{{ $blog->url() }}" class="inline-block">
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-{{ $blog->categoryColorClass() }}-100 text-{{ $blog->categoryColorClass() }}-800">
+                                    {{ $blog->category() }}
+                                </span>
+                            </a>
+                        </div>
+                        <a href="{{ $blog->url() }}" class="block">
+                            <h3 class="mt-4 text-xl leading-7 font-semibold text-gray-900">
+                                {{ $blog->title()  }}
+                            </h3>
+                            <p class="mt-3 text-base leading-6 text-gray-500">
+                                {{ substr($blog->content(), 0, 200) }}...
+                            </p>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
 @endsection

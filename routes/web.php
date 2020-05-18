@@ -15,3 +15,5 @@ Route::post('/account/things/new', 'AccountController@thingNewPost');
 Route::get('/account/things/{id}', 'AccountController@thingEdit');
 Route::post('/account/things/{id}', 'AccountController@thingEditPost');
 Route::get('/account/things/{id}/delete', 'AccountController@thingDelete');
+
+Route::get('/blog/{slug}', 'IndexController@blog');
