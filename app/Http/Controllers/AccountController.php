@@ -121,7 +121,8 @@ class AccountController extends Controller
         $thing = (new Thing())->create([
             'Name'        => $request->input('name'),
             'Description' => $request->input('description'),
-            'Price'       => (float)$request->input('price'),
+            'Price'       => (float) $request->input('price'),
+            'User'        => [$user->id()],
         ]);
 
         return redirect('/account/things?success=Created ' . $thing->name());
@@ -177,7 +178,7 @@ class AccountController extends Controller
         $thing->save([
             'Name'        => $request->input('name'),
             'Description' => $request->input('description'),
-            'Price'       => (float)$request->input('price'),
+            'Price'       => (float) $request->input('price'),
         ]);
 
         return redirect($thing->editUrl() . '?success=Saved');

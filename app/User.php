@@ -4,6 +4,7 @@ namespace App;
 
 class User extends Airtable
 {
+
     protected $table = "Users";
 
     public function email()
@@ -29,10 +30,5 @@ class User extends Airtable
     public function avatar()
     {
         return isset($this->fields->{'Avatar'}[0]->url) ? $this->fields->{'Avatar'}[0]->url : null;
-    }
-
-    public function thingsTheyUse()
-    {
-        return isset($this->fields->{'Things They Use'}) ? $this->fields->{'Things They Use'} : [];
     }
 }

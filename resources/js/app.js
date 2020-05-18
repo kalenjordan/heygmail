@@ -16,6 +16,7 @@ const app = new Vue({
         if (formElement) {
             formElement.focus();
         }
+        this.geocode();
     },
     data() {
         return {
@@ -40,7 +41,6 @@ const app = new Vue({
             this.focusMode = !this.focusMode;
         },
         clickLink(event, character, dontExecuteIfFormFieldFocused = true) {
-            console.log(event);
             if (this.isFormFieldFocused() && dontExecuteIfFormFieldFocused) {
                 this.manuallyAddCharacter(character);
                 return;
@@ -66,6 +66,24 @@ const app = new Vue({
                 "Command + Enter - Submit form" + "\n" +
                 "Shift + A - open airtable (admin only)" + "\n" +
                 "");
+        },
+        geocode() {
+            console.log('getting position from browser...');
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+                console.log('lat/lon: ' + latitude + ', ' + longitude);
+
+                let url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+                    latitude + ',' + longitude +
+                    '&sensor=true&key=' + googleApiKey;
+                console.log('geolocating from google api: ' + url);
+                axios.get(url).then((response) => {
+                    console.log(response);
+                });
+            }, function() {
+                console.log('error');
+            });
         }
     }
 });

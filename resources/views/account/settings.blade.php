@@ -6,6 +6,9 @@
 
 @section('title')
     <title>Settings | {{ env('APP_NAME') }}</title>
+    <script>
+        googleApiKey = '{{ env('GOOGLE_GEOCODING_API') }}';
+    </script>
 @endsection
 
 @section('content')
