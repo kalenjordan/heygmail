@@ -18,5 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/newsletter-subscribe', 'ApiController@newsletterSubscribe');
+
 Route::get('/geocode', 'ApiController@geocode');
 Route::get('/geocode-delete', 'ApiController@geocodeDelete');
