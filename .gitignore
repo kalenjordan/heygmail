@@ -6,6 +6,9 @@
 /public/js/app.js.map
 /public/mix-manifest.json
 
+# Shouldn't technically ignore this but it keeps getting out of sync in prod
+/package-lock.json
+
 /vendor
 /.idea
 _ide_helper.php

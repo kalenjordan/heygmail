@@ -1,6 +1,16 @@
 <div class="bg-gray-800" :class="{ 'opacity-0' : focusMode }">
     <div class="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+            <div class="xl:col-span-1 mb-8">
+                <a href="/">
+                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-gray-500 hover:opacity-50 transition ease-in-out duration-150'])
+                </a>
+
+                <p class="mt-4 text-gray-400 text-xl leading-6">
+                    This is a sweet starter site that I use to build all my stuff!
+                </p>
+            </div>
+
             <div class="grid grid-cols-2 gap-8 xl:col-span-2">
                 <div class="md:grid md:grid-cols-2 md:gap-8">
                     <div>

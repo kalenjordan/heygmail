@@ -68,7 +68,7 @@
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
                                 <a href="/">
-                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-indigo-500'])
+                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-indigo-500 hover:opacity-50 transition ease-in-out duration-150'])
                                 </a>
                                 <div class="-mr-2 flex items-center md:hidden">
                                     <button @click="toggleMobileMenu" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
