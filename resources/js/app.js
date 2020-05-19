@@ -3,7 +3,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 window.Vue.use(require('v-tooltip'));
-window.Vue.use(require('vue-shortkey'));
+window.Vue.use(require('vue-shortkey'), {prevent: ['input', 'textarea']});
 
 const files = require.context('./', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
@@ -16,6 +16,16 @@ const app = new Vue({
         if (formElement) {
             formElement.focus();
         }
+
+        document.addEventListener('keydown', function (e) {
+            let activeElement = document.activeElement;
+            if (e.code === 'Escape') {
+                activeElement.blur();
+            }
+            if (e.code === 'Enter' && e.metaKey) {
+                this.form.submit();
+            }
+        });
     },
     data() {
         return {
@@ -25,39 +35,17 @@ const app = new Vue({
         }
     },
     methods: {
-        toggleAccountMenu: function() {
-            this.showAccountMenu = ! this.showAccountMenu;
+        toggleAccountMenu: function () {
+            this.showAccountMenu = !this.showAccountMenu;
         },
-        toggleMobileMenu: function() {
-            this.showMobileMenu = ! this.showMobileMenu;
+        toggleMobileMenu: function () {
+            this.showMobileMenu = !this.showMobileMenu;
         },
         toggleFocusMode() {
-            if (this.isFormFieldFocused()) {
-                this.manuallyAddCharacter('f');
-                return;
-            }
-
             this.focusMode = !this.focusMode;
         },
-        clickLink(event, character, dontExecuteIfFormFieldFocused = true) {
-            if (this.isFormFieldFocused() && dontExecuteIfFormFieldFocused) {
-                this.manuallyAddCharacter(character);
-                return;
-            }
-
+        clickLink(event) {
             event.target.click();
-        },
-        isFormFieldFocused() {
-            let activeElement = document.activeElement;
-            let inputs = ['input', 'select', 'textarea'];
-
-            if (activeElement && inputs.indexOf(activeElement.tagName.toLowerCase()) !== -1) {
-                return true;
-            }
-        },
-        manuallyAddCharacter(character) {
-            let activeElement = document.activeElement;
-            activeElement.value += character;
         },
         showKeyboardShortcuts() {
             alert("" +

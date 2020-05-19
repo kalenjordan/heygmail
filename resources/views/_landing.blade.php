@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="relative pt-6">
+            <section id="nav" class="relative pt-6">
                 <div class="max-w-screen-xl mx-auto px-4 sm:px-6" :class="{ 'opacity-0' : focusMode }">
                     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
@@ -123,7 +123,9 @@
                                 </span>
                             @else
                                 <span class="inline-flex rounded-md shadow">
-                                    <a href="/auth" class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-indigo-600 bg-white hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700 transition duration-150 ease-in-out">
+                                    <a href="/auth"
+                                       v-shortkey="['l']" @shortkey="clickLink($event)" v-tooltip="'L key'"
+                                       class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-indigo-600 bg-white hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700 transition duration-150 ease-in-out">
                                         Log in
                                     </a>
                                 </span>
@@ -211,7 +213,7 @@
                 </div>
                 @yield('content')
 
-            </div>
+            </section>
         </div>
 
         @include('footer')
