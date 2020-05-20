@@ -41,4 +41,9 @@ class User extends Airtable
     {
         return isset($this->fields->{'API Key'}) ? $this->fields->{'API Key'} : null;
     }
+
+    public function isAdmin()
+    {
+        return Util::isAdmin($this);
+    }
 }
