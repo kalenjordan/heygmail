@@ -1,0 +1,26 @@
+{
+  "name": "Starter Chrome Extension",
+  "version": "0.1",
+  "description": "Starter chrome extension",
+  "background": {"page": "background.html"},
+  "manifest_version": 2,
+  "options_page": "options.html",
+  "permissions": [
+    "storage"
+  ],
+  "browser_action": {
+    "name": "Manipulate DOM",
+    "icons": ["icon.png"],
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [ {
+    "js": [ "background.js" ],
+    "run_at": "document_idle",
+    "css": ["styles.css"],
+    "matches": [ "https://twitter.com/*"]
+  }],
+  "icons":
+  {
+    "128": "icon-128.jpg"
+  }
+}
