@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-    <div class="mt-10 pb-20 mx-auto max-w-2xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-28">
+    <div class="pb-20 mx-auto max-w-2xl px-4 sm:px-6">
         <div class="text-center">
             <h2 class="text-2xl sm:text-3xl  md:text-4xl tracking-tight leading-10 font-extrabold text-gray-900  sm:leading-none">
                 {{ $blog->title() }}
