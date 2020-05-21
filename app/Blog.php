@@ -54,4 +54,26 @@ class Blog extends Airtable
     {
         return '/blog/' . $this->slug();
     }
+
+    public function searchTitle()
+    {
+        return isset($this->fields->{'Search Title'}) ? $this->fields->{'Search Title'} : 0;
+    }
+
+    public function searchIndexId()
+    {
+        return 'blog_' . $this->id();
+    }
+
+    public function toSearchIndexArray()
+    {
+        return [
+            'url'          => $this->url(),
+            'object_id'    => $this->searchIndexId(),
+            'type'         => 'blog',
+            'search_title' => $this->searchTitle(),
+            'content'      => $this->content(),
+            'category'     => $this->category(),
+        ];
+    }
 }

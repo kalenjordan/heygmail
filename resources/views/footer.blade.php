@@ -40,7 +40,7 @@
                             </li>
                             <li class="mt-4">
                                 <a href="javascript://" @click="showKeyboardShortcuts"
-                                   v-shortkey="['/']" @shortkey="showKeyboardShortcuts()" v-tooltip="'/'"
+                                   v-shortkey="['?']" @shortkey="showKeyboardShortcuts()" v-tooltip="'?'"
                                    class="text-base leading-6 text-gray-300 hover:text-white">
                                     Keyboard shortcuts
                                 </a>

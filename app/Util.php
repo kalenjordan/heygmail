@@ -49,5 +49,18 @@ class Util
         return "https://airtable.com/" . env('AIRTABLE_BASE_ID');
     }
 
+    public static function algoliaAppId()
+    {
+        return env('ALGOLIA_APP_ID');
+    }
 
+    public static function algoliaPublicKey()
+    {
+        return env('ALGOLIA_PUBLIC_KEY');
+    }
+
+    public static function algoliaPrivateKey()
+    {
+        return env('ALGOLIA_PRIVATE_KEY');
+    }
 }

@@ -17,6 +17,15 @@
 </head>
 <body style="font-family: 'Cormorant', serif;">
     <div id="app" class="bg-gray-50">
+        <div class="bg-gray-100" v-if="showSearch">
+            <div class="p-4 max-w-lg mx-auto text-center">
+                <search-component class="inline-block" :app-id="'{{ Util::algoliaAppId()  }}'" :public-api-key="'{{ Util::algoliaPublicKey() }}'"></search-component>
+                <a href="javascript://" class="hidden"
+                   @click="toggleSearch" v-shortkey="['esc']" @shortkey="showSearch = false" v-tooltip="'esc'"
+                >Close</a>
+            </div>
+        </div>
+
         @if (isset($error))
             <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
@@ -33,33 +42,13 @@
         @endif
 
         @if (isset($success))
-            <div class="rounded-md bg-green-50 p-4">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm leading-5 font-medium text-green-800">
-                            {{ $success }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
+            Need new success message jobby {{ $success }}
         @endif
 
         <div class="relative overflow-hidden">
             <div class="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
                 <div class="relative h-full max-w-screen-xl mx-auto">
-                    <svg class="absolute left-full transform -translate-y-3/4 -translate-x-1/4 md:-translate-y-1/2 lg:-translate-x-1/2" width="404" height="784" fill="none" viewBox="0 0 404 784">
-                        <defs>
-                            <pattern id="5d0dd344-b041-4d26-bec4-8d33ea57ec9b" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                                <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor"/>
-                            </pattern>
-                        </defs>
-                        <rect width="404" height="784" fill="url(#5d0dd344-b041-4d26-bec4-8d33ea57ec9b)"/>
-                    </svg>
+                    @include('svg.dot-pattern')
                 </div>
             </div>
 
@@ -68,7 +57,7 @@
                     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
-                                <a href="/">
+                                <a href="/" v-shortkey="['h']" @shortkey="clickLink($event)">
                                     @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-indigo-500 hover:scale-105 transform duration-150'])
                                 </a>
                                 <div class="-mr-2 flex items-center md:hidden">
@@ -84,6 +73,10 @@
                             </a>
                             <a href="#link2" class="ml-10 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition duration-150 ease-in-out">
                                 Link 2
+                            </a>
+                            <a href="javascript://" @click="toggleSearch" v-shortkey="['/']" @shortkey="toggleSearch"
+                               class="ml-10 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition duration-150 ease-in-out">
+                                Search
                             </a>
                             <a href="#" class="ml-10 font-medium text-indigo-500 hover:text-indigo-900 focus:outline-none focus:text-indigo-900 transition duration-150 ease-in-out">
                                 Call to action
