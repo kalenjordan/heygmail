@@ -20,15 +20,43 @@ function inputFieldIsntFocused()
     return ! inputFieldIsFocused();
 }
 
+function hideUnfocusedTweets()
+{
+    setTimeout(() => {
+        let activeElement = document.activeElement;
+        let role = activeElement.getAttribute('role');
+        if (role !== 'article') {
+            return;
+        }
+
+        let articles = document.querySelectorAll('article[role=article]:not(:focus)');
+        for (i = 0; i < articles.length; ++i) {
+            console.log('in loop ' + i);
+            articles[i].style.opacity = 0;
+        }
+        activeElement.style.opacity = 1;
+    }, 100);
+}
+
+function showAllTweets()
+{
+    let articles = document.querySelectorAll('article[role=article]');
+    for (i = 0; i < articles.length; ++i) {
+        console.log('in loop ' + i);
+        articles[i].style.opacity = 1;
+    }
+}
+
+function isFocusModeEnabled()
+{
+    return document.querySelector('header').style.display === 'none';
+}
 
 document.addEventListener('keydown', function (e) {
     let activeElement = document.activeElement;
-    console.log('active element: ');
-    console.log(activeElement);
-    if (activeElement.getAttribute('role')) {
-        console.log('role:');
-        console.log(activeElement.getAttribute('role'));
-    }
+    let role = activeElement.getAttribute('role');
+    // console.log('active element: ');
+    // console.log(activeElement);
 
     if (e.code === 'Escape') {
         activeElement.blur();
@@ -39,6 +67,10 @@ document.addEventListener('keydown', function (e) {
     }
 
     if (e.key === 'j' ) {
+        if (isFocusModeEnabled()) {
+            hideUnfocusedTweets();
+        }
+
         if (activeElement.tagName === 'BODY') {
             document.querySelector('div[aria-label="Timeline: Messages"] div[role=tab]').focus()
         } else if (activeElement.tagName === 'DIV') {
@@ -49,6 +81,10 @@ document.addEventListener('keydown', function (e) {
     }
 
     if (e.key === 'k' ) {
+        if (isFocusModeEnabled()) {
+            hideUnfocusedTweets();
+        }
+
         if (activeElement.tagName === 'DIV') {
             let previous = activeElement.parentElement.parentElement.previousSibling.children[0].children[0];
             previous.focus();
@@ -56,9 +92,20 @@ document.addEventListener('keydown', function (e) {
     }
 
     if (e.key === 'f' && inputFieldIsntFocused() ) {
-        let currentVisibility = document.querySelector('header').style.visibility;
-        newVisibility = (!currentVisibility  || currentVisibility === 'visible') ? 'hidden' : 'visible';
-        document.querySelector('header').style.visibility = newVisibility;
-        document.querySelector("div[data-testid='sidebarColumn']").style.visibility = newVisibility;
+        let newVisibility = (isFocusModeEnabled()) ? 'block' : 'none';
+        let newMargin = isFocusModeEnabled() ? 0 : '200px';
+
+        setInterval(() => {
+            document.title = 'focus';
+        }, 100);
+
+        document.querySelector('header').style.display = newVisibility;
+        document.querySelector("div[data-testid='sidebarColumn']").style.display = newVisibility;
+        document.querySelector("h2[role=heading]").style.display = newVisibility;
+        document.querySelector("main").style.marginLeft = newMargin;
+
+        if (!isFocusModeEnabled()) {
+            showAllTweets();
+        }
     }
 });
