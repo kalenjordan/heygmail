@@ -30,8 +30,8 @@ const app = new Vue({
                 activeElement.blur();
             }
             if (e.code === 'Enter' && e.metaKey) {
-                if (this.form) {
-                    this.form.submit();
+                if (document.querySelector('form')) {
+                    document.querySelector('form').submit();
                 }
             }
         });

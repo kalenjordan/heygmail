@@ -19,7 +19,8 @@
     <div id="app" class="bg-gray-50">
         <div class="bg-gray-100" v-if="showSearch">
             <div class="p-4 max-w-lg mx-auto text-center">
-                <search-component class="inline-block" :app-id="'{{ Util::algoliaAppId()  }}'" :public-api-key="'{{ Util::algoliaPublicKeyFor($user) }}'"></search-component>
+                <search-component class="inline-block"
+                                  :app-id="'{{ Util::algoliaAppId()  }}'" :public-api-key="'{{ Util::algoliaPublicKeyFor(isset($user) ? $user : null) }}'"></search-component>
                 <a href="javascript://" class="hidden"
                    @click="toggleSearch" v-shortkey="['esc']" @shortkey="showSearch = false" v-tooltip="'esc'"
                 >Close</a>
@@ -83,7 +84,7 @@
                             </a>
                         </div>
                         <div class="hidden z-10 md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
-                            @if ($user)
+                            @if (isset($user) && $user)
                                 <span class="inline-flex">
                                     <div class="inline-block text-left">
                                         <div>
@@ -165,7 +166,7 @@
                                 </a>
                             </div>
 
-                            @if ($user)
+                            @if (isset($user) && $user)
                                 <div class="pt-4 pb-3 border-t border-gray-100">
                                     <div class="flex items-center px-5">
                                         <div class="flex-shrink-0">
@@ -189,7 +190,7 @@
                                 </div>
                             @endif
 
-                            @if ($user)
+                            @if (isset($user))
                                 <div>
                                     <a href="/logout" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
                                         Log out

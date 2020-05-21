@@ -39,4 +39,3 @@ def deploy():
 	with cd(remoteDocumentRoot):
 		print(green("4. Running npm run "))
 		run('npm run prod')
-

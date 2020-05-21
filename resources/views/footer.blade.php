@@ -1,3 +1,7 @@
+<?php
+/** @var \App\User $user */
+?>
+
 <div class="bg-gray-800" :class="{ 'opacity-0' : focusMode }">
     <div class="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
@@ -56,7 +60,7 @@
                                     </template>
                                 </a>
                             </li>
-                            @if (Util::isAdmin($user))
+                            @if (isset($user) && $user->isAdmin())
                                 <li class="mt-4">
                                     <a href="{{ Util::airtableUrl() }}" target="_blank"
                                        v-shortkey="['shift', 'a']" @shortkey="clickLink($event, 'A')" v-tooltip="'Shift + A'"

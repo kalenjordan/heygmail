@@ -64,9 +64,9 @@ class Util
      *
      * @return mixed
      */
-    public static function algoliaPublicKeyFor($user)
+    public static function algoliaPublicKeyFor($user = null)
     {
-        if ($user && $user->isAdmin()) {
+        if (isset($user) && $user && $user->isAdmin()) {
             return env('ALGOLIA_PUBLIC_KEY_ADMIN');
         }
 

@@ -53,6 +53,9 @@ class IndexController extends Controller
         $user = $request->session()->get('user');
 
         $blog = (new Blog())->lookupWithFilter("Slug = '$slug'");
+        if (! $blog) {
+            abort(404);
+        }
 
         return view('blog', [
             'error'   => $request->input('error'),
