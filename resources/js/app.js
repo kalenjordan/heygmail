@@ -23,6 +23,7 @@ const app = new Vue({
         document.addEventListener('keydown', (e) => {
             let activeElement = document.activeElement;
             if (e.code === 'Escape') {
+                this.successMessage = null;
                 if (activeElement.getAttribute('type') === 'search') {
                     this.toggleSearch();
                 }
@@ -34,6 +35,8 @@ const app = new Vue({
                 }
             }
         });
+
+        this.successMessage = window.successMessage;
     },
     data() {
         return {
@@ -41,6 +44,7 @@ const app = new Vue({
             showMobileMenu: false,
             focusMode: false,
             showSearch: false,
+            successMessage: null,
         }
     },
     methods: {

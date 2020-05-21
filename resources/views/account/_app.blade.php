@@ -10,9 +10,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{--<link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>--}}
+    @if (isset($success))
+        <script>
+            window.successMessage = "{{ $success }}";
+        </script>
+    @endif
 </head>
 <body>
     <div id="app">
+        <div class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end" v-if="successMessage">
+            <div class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto">
+                <div class="rounded-lg shadow-xs overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="ml-3 w-0 flex-1 pt-0.5">
+                                <p class="text-sm leading-5 font-medium text-gray-900">
+                                    Success!
+                                </p>
+                                <p class="mt-1 text-sm leading-5 text-gray-500">
+                                    @{{ successMessage }}
+                                </p>
+                            </div>
+                            <div class="ml-4 flex-shrink-0 flex">
+                                <button class="inline-flex text-gray-400 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
+                                        @click="successMessage = null">
+                                    @include('svg.close', ['classes' => 'h-4 w-4'])
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <nav class="bg-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,7 +77,7 @@
                             </button>
 
                             <!-- Profile dropdown -->
-                            <div class="ml-3 relative">
+                            <div class="ml-3">
                                 <div>
                                     <button @click="toggleAccountMenu()" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
                                         <img class="h-8 w-8 rounded-full"
@@ -136,23 +170,6 @@
                         <div class="ml-3">
                             <h3 class="text-sm leading-5 font-medium text-red-800">
                                 {{ $error }}
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            @if (isset($success))
-                <div class="rounded-md bg-green-50 p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <h3 class="text-sm leading-5 font-medium text-green-800">
-                                {{ $success }}
                             </h3>
                         </div>
                     </div>

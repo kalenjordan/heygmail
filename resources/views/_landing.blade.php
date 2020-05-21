@@ -85,7 +85,7 @@
                         <div class="hidden z-10 md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
                             @if ($user)
                                 <span class="inline-flex">
-                                    <div class="relative inline-block text-left">
+                                    <div class="inline-block text-left">
                                         <div>
                                             <button @click="toggleAccountMenu" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
                                                 <img class="header-avatar h-8 w-8 rounded-full"

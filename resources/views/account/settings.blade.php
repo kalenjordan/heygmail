@@ -95,6 +95,19 @@
                             </div>
                         </location-button>
 
+                        <div class="mb-4">
+                            <label for="status" class="block text-sm font-medium leading-5 text-gray-700">
+                                Status
+                            </label>
+                            <div class="mt-1 rounded-md shadow-sm">
+                                <select id="status" name="status" class="form-select block transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+                                    <option {{ $user->status() == 'Disabled' ? 'selected' : '' }} >Disabled</option>
+                                    <option {{ $user->status() == 'Private' ? 'selected' : '' }} >Private</option>
+                                    <option {{ $user->status() == 'Public' ? 'selected' : '' }}>Public</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

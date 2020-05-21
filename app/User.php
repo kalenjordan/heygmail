@@ -76,4 +76,8 @@ class User extends Airtable
         ];
     }
 
+    public function status()
+    {
+        return isset($this->fields->{'Status'}) ? $this->fields->{'Status'} : null;
+    }
 }
