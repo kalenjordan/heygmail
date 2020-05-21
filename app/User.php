@@ -46,4 +46,34 @@ class User extends Airtable
     {
         return Util::isAdmin($this);
     }
+
+    public function url()
+    {
+        return '/users/' . $this->id();
+    }
+
+    public function searchTitle()
+    {
+        return isset($this->fields->{'Search Title'}) ? $this->fields->{'Search Title'} : 0;
+    }
+
+    public function searchIndexId()
+    {
+        return 'user_' . $this->id();
+    }
+
+    public function toSearchIndexArray()
+    {
+        return [
+            'url'          => $this->url(),
+            'object_id'    => $this->searchIndexId(),
+            'type'         => 'blog',
+            'search_title' => $this->searchTitle(),
+            'name'         => $this->name(),
+            'about'        => $this->about(),
+            'location'     => $this->location(),
+            'public'       => false,
+        ];
+    }
+
 }

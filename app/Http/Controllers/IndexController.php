@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use App\Blog;
 use App\User;
+use App\Util;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -23,6 +25,11 @@ class IndexController extends Controller
         $params = array(
             "sort" => [['field' => 'Published', 'direction' => "desc"]],
         );
+
+//        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKey(), [
+//            'filters' => 'public:true'
+//        ]);
+//        die($key);
 
         $blogs = (new Blog())->getRecords($params);
 

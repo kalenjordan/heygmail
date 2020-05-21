@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\AlgoliaSearch\SearchIndex;
 use App\Blog;
+use App\User;
 use App\Util;
 use Illuminate\Console\Command;
 
@@ -64,6 +65,13 @@ class AlgoliaIndex extends Command
             $this->_indexBlog($blog);
         }
 
+        $users = (new User())->getRecords();
+
+        $this->info(count($users) . " users");
+        foreach ($users as $user) {
+            $this->_indexUser($user);
+        }
+
         return;
     }
 
@@ -85,4 +93,21 @@ class AlgoliaIndex extends Command
         ]);
     }
 
+    /**
+     * @param Blog $blog
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\MissingObjectId
+     */
+    protected function _indexUser(User $user) {
+        $this->info("Indexing user: " . $user->searchTitle()  . " - " . $user->searchIndexId());
+        $data = $user->toSearchIndexArray();
+        if ($this->option('v')) {
+            foreach ($data as $key => $val) {
+                $this->info("    - $key: $val");
+            }
+        }
+        $this->index->saveObjects([$data], [
+            'objectIDKey' => 'object_id',
+        ]);
+    }
 }

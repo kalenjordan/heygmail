@@ -59,6 +59,20 @@ class Util
         return env('ALGOLIA_PUBLIC_KEY');
     }
 
+    /**
+     * @param $user User
+     *
+     * @return mixed
+     */
+    public static function algoliaPublicKeyFor($user)
+    {
+        if ($user && $user->isAdmin()) {
+            return env('ALGOLIA_PUBLIC_KEY_ADMIN');
+        }
+
+        return env('ALGOLIA_PUBLIC_KEY');
+    }
+
     public static function algoliaPrivateKey()
     {
         return env('ALGOLIA_PRIVATE_KEY');

@@ -6,6 +6,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Blog extends Airtable
 {
+
     protected $table = "Blogs";
 
     public function title()
@@ -25,7 +26,7 @@ class Blog extends Airtable
 
     public function contentRendered()
     {
-        if (! $this->content()) {
+        if (!$this->content()) {
             return null;
         }
 
@@ -74,6 +75,7 @@ class Blog extends Airtable
             'search_title' => $this->searchTitle(),
             'content'      => $this->content(),
             'category'     => $this->category(),
+            'public'       => true,
         ];
     }
 }

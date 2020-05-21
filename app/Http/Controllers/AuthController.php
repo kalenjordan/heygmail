@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use App\Date;
 use App\User;
+use App\Util;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 
