@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Thing;
 use App\User;
 use App\Util;
 use Illuminate\Http\Request;
@@ -147,5 +148,34 @@ class ApiController extends Controller
         }
 
         return $user;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function things(Request $request)
+    {
+        $query = $request->input('query');
+
+        $params = array(
+            "sort"            => array(array('field' => 'Name', 'direction' => "asc")),
+            "maxRecords"      => 10,
+            "filterByFormula" => "FIND(LOWER('$query'), LOWER(Name)) > 0",
+        );
+        $things = (new Thing())->getRecords($params);
+
+        $data = [];
+        foreach ($things as $thing) {
+            /** @var Thing $thing */
+            $data[] = [
+                'id'   => $thing->id(),
+                'name' => $thing->name(),
+            ];
+        }
+
+        return $data;
     }
 }

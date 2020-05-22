@@ -47,10 +47,20 @@ class AccountController extends Controller
             return redirect("/?error=not_logged_in");
         }
 
-        $user->save([
+        $data = [
             'Name'  => $request->input('name'),
             'About' => $request->input('about'),
-        ]);
+        ];
+
+        if ($request->input('favorite_things')) {
+            $thingsTheyUseIds = explode(',', $request->input('favorite_things'));
+            $thingsTheyUseIds = $this->_saveFavoriteThings($thingsTheyUseIds);
+            $data['Favorite Things'] = $thingsTheyUseIds;
+        } else {
+            $data['Favorite Things'] = [];
+        }
+
+        $user->save($data);
 
         return redirect('/account/settings?success=Saved');
     }
@@ -177,13 +187,36 @@ class AccountController extends Controller
             throw new \Exception("Couldn't load thing: $thingId");
         }
 
-        $thing->save([
+        $data = [
             'Name'        => $request->input('name'),
             'Description' => $request->input('description'),
             'Price'       => (float) $request->input('price'),
-        ]);
+        ];
+
+        $thing->save($data);
 
         return redirect($thing->editUrl() . '?success=Saved');
+    }
+
+    /**
+     * @param User $user
+     * @param      $thingsTheyUseIds
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function _saveFavoriteThings($thingIds)
+    {
+        for ($i = 0; $i < count($thingIds); $i++) {
+            $thingId = $thingIds[$i];
+            if (substr($thingId, 0, 4) == 'new_') {
+                $newThingName = substr($thingId, 4);
+                $thingTheyUse = (new Thing())->create(['Name' => $newThingName]);
+                $thingIds[$i] = $thingTheyUse->id();
+            }
+        }
+
+        return $thingIds;
     }
 
     /**

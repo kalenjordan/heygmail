@@ -80,4 +80,42 @@ class User extends Airtable
     {
         return isset($this->fields->{'Status'}) ? $this->fields->{'Status'} : null;
     }
+
+    /**
+     * @return mixed|null
+     * @throws \Exception
+     */
+    public function favoriteThingsIds()
+    {
+        return isset($this->fields->{'Favorite Things'}) ? $this->fields->{'Favorite Things'} : [];
+    }
+
+    /**
+     * @return mixed|null
+     * @throws \Exception
+     */
+    public function favoriteThingsNames()
+    {
+        return isset($this->fields->{'Favorite Things Names'}) ? $this->fields->{'Favorite Things Names'} : [];
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function favoriteThingsVue()
+    {
+        $ids = $this->favoriteThingsIds();
+        $names = $this->favoriteThingsNames();
+
+        $results = [];
+        for ($i = 0; $i < count($ids); $i++) {
+            $results[] = [
+                'id'     => $ids[$i],
+                'name'   => $names[$i],
+            ];
+        }
+
+        return $results;
+    }
 }

@@ -29,6 +29,7 @@
         "@tailwindcss/ui": "^0.3.0",
         "v-tooltip": "^2.0.3",
         "vue-instantsearch": "^1.7.0",
+        "vue-multiselect": "^2.1.6",
         "vue-shortkey": "^3.1.7"
     }
 }

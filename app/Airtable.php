@@ -248,4 +248,23 @@ class Airtable
     {
         return isset($airRecord->fields->$fieldName[0]) ? $airRecord->fields->$fieldName[0] : null;
     }
+
+    public function searchTitle()
+    {
+        return isset($this->fields->{'Search Title'}) ? $this->fields->{'Search Title'} : 0;
+    }
+
+    public function searchIndexId()
+    {
+        return 'airtable_record_' . $this->id();
+    }
+
+    public function toSearchIndexArray()
+    {
+        return [
+            'object_id'    => $this->searchIndexId(),
+            'type'         => 'generic',
+            'search_title' => $this->searchTitle(),
+        ];
+    }
 }
