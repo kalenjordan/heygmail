@@ -20,4 +20,7 @@ function roamAltFKey(activeElement, e) {
     document.querySelector('.roam-sidebar-container').style.visibility = newVisibility;
     document.querySelector('.roam-topbar').style.visibility = newVisibility;
     document.querySelector('#buffer').style.visibility = newVisibility;
+    document.querySelector('.rm-reference-main').style.visibility = newVisibility;
+    
+    e.preventDefault();
 }
