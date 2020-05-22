@@ -14,10 +14,17 @@
     "default_icon": "icon.png"
   },
   "content_scripts": [ {
-    "js": [ "background.js" ],
+    "js": [
+      "twitter.js",
+      "roam.js",
+      "background.js"
+    ],
     "run_at": "document_idle",
     "css": ["styles.css"],
-    "matches": [ "https://twitter.com/*"]
+    "matches": [
+      "https://twitter.com/*",
+      "https://roamresearch.com/*"
+    ]
   }],
   "icons":
   {
