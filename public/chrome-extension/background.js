@@ -1,4 +1,5 @@
-console.log("KJ Keyboard Shortcuts Chrome Extension (domain: " + document.domain + ")");
+let version = 0.2;
+console.log("KJ Keyboard Shortcuts v" + version + " (domain: " + document.domain + ")");
 
 document.addEventListener('keydown', function (e) {
     if (document.domain === 'twitter.com') {

@@ -5,6 +5,7 @@
 /public/js/app.js
 /public/js/app.js.map
 /public/mix-manifest.json
+/public/kj-keyboard-shortcuts.zip
 
 # Shouldn't technically ignore this but it keeps getting out of sync in prod
 /package-lock.json

@@ -26,7 +26,6 @@ function hideUnfocusedTweets() {
 
         let articles = document.querySelectorAll('article[role=article]:not(:focus)');
         for (i = 0; i < articles.length; ++i) {
-            console.log('in loop ' + i);
             articles[i].style.opacity = 0;
         }
         activeElement.style.opacity = 1;
@@ -36,7 +35,6 @@ function hideUnfocusedTweets() {
 function showAllTweets() {
     let articles = document.querySelectorAll('article[role=article]');
     for (i = 0; i < articles.length; ++i) {
-        console.log('in loop ' + i);
         articles[i].style.opacity = 1;
     }
 }
@@ -57,8 +55,20 @@ function twitterEventListener(e) {
     } else if (e.key === 'k') {
         twitterKKey(activeElement, e);
     } else if (e.key === 'f' && twitterInputFieldIsntFocused()) {
-        twitterFKey(activeElement, e);
+        twitterToggleFocusMode(activeElement, e);
+    } else if (e.code === 'Slash' && e.shiftKey && e.altKey) {
+        twitterShowKeyboardShortcuts();
     }
+}
+
+function twitterShowKeyboardShortcuts() {
+    alert("" +
+        "KJ Keyboard Shortcuts - version: " + version + "\n\n" +
+        "j - Down" + "\n" +
+        "k - Up" + "\n" +
+        "f - Focus mode" + "\n" +
+        ""
+    );
 }
 
 function twitterJKey(activeElement, e) {
@@ -85,7 +95,7 @@ function twitterKKey(activeElement, e) {
     }
 }
 
-function twitterFKey(activeElement, e) {
+function twitterToggleFocusMode(activeElement, e) {
     let newVisibility = (isTwitterFocusModeEnabled()) ? 'block' : 'none';
     let newMargin = isTwitterFocusModeEnabled() ? 0 : '218px';
 
@@ -93,7 +103,7 @@ function twitterFKey(activeElement, e) {
         document.title = 'focus';
     }, 100);
 
-    document.querySelector('header').style.display = newVisibility;
+    document.querySelector('header').style.display = isTwitterFocusModeEnabled() ? "flex" : "none";
     document.querySelector("div[data-testid='sidebarColumn']").style.display = newVisibility;
     document.querySelector("main").style.marginLeft = newMargin;
 
