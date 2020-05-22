@@ -101,8 +101,13 @@ document.addEventListener('keydown', function (e) {
 
         document.querySelector('header').style.display = newVisibility;
         document.querySelector("div[data-testid='sidebarColumn']").style.display = newVisibility;
-        document.querySelector("h2[role=heading]").style.display = newVisibility;
         document.querySelector("main").style.marginLeft = newMargin;
+
+        document.querySelector("div[role=progressbar]").parentElement.style.display = newVisibility;
+
+        let homeH2 = document.querySelector("h2[role=heading][dir=ltr]");
+        let parent = homeH2.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        parent.style.display = newVisibility;
 
         if (!isFocusModeEnabled()) {
             showAllTweets();

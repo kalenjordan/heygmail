@@ -15,7 +15,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{--<link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>--}}
 </head>
-<body style="font-family: 'Cormorant', serif;">
+<body style="font-family: 'Cormorant', serif; font-size: 100%;">
     <div id="app" class="bg-gray-50">
         <div class="bg-gray-100" v-if="showSearch">
             <div class="p-4 max-w-lg mx-auto text-center">
