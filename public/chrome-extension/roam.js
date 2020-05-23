@@ -12,7 +12,29 @@ function roamEventListener(e) {
         roamToggleFocus(activeElement, e);
     } else if (e.code === 'KeyL' && e.altKey) {
         roamClickLeftNav(activeElement, e);
+    } else if ((e.code === 'Enter' || e.code === 'Tab') && roamAutocompleteIsOpen()) {
+        roamSelectFirstAutocompleteOption(activeElement, e);
+    } else if (e.code === 'ArrowDown' && e.altKey) {
+        roamSelectLastBullet(activeElement, e);
     }
+}
+
+function roamSelectLastBullet(activeElement, e) {
+    let evt = document.createEvent('MouseEvents')
+    evt.initMouseEvent('mousedown', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    document.querySelectorAll('.roam-article .roam-block-container:last-of-type .roam-block')[0].dispatchEvent(evt)
+    
+    e.preventDefault();
+}
+
+function roamSelectFirstAutocompleteOption(activeElement, e) {
+    console.log('select first auto complete option');
+    document.querySelector('.bp3-elevation-3 .dont-unfocus-block').click();
+    e.preventDefault();
+}
+
+function roamAutocompleteIsOpen() {
+    return document.querySelector('.bp3-elevation-3') !== null;
 }
 
 function roamToggleFocus(activeElement, e) {
