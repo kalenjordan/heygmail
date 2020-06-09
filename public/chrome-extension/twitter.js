@@ -1,3 +1,35 @@
+function twitterEventListener(e) {
+    let activeElement = document.activeElement;
+    console.log('active element:');
+    console.log(activeElement);
+    console.log('event:');
+    console.log(e);
+
+    if (e.code === 'Escape') {
+        // closeMessageWindow();
+        activeElement.blur();
+    } else if (e.code === 'KeyM' && e.altKey) {
+        clickMentionNotificationTab();
+    } else if (e.code === 'Enter' && e.metaKey) {
+        document.querySelector("div[data-testid='nextButton']").click()
+    } else if (e.key === 'j') {
+        twitterJKey(activeElement, e);
+    } else if (e.key === 'k') {
+        twitterKKey(activeElement, e);
+    } else if (e.code === 'KeyF' && e.altKey && twitterInputFieldIsntFocused()) {
+        twitterToggleFocusMode(activeElement, e);
+    } else if (e.code === 'Slash' && e.shiftKey && e.altKey) {
+        twitterShowKeyboardShortcuts();
+    } else if (e.code === 'KeyO') {
+        twitterOpenLink(activeElement, e);
+    }
+}
+
+function twitterOpenLink(activeElement, e) {
+    console.log('role = link');
+    activeElement.querySelector('a[role=link][target=_blank]').click();
+}
+
 function twitterInputFieldIsFocused() {
     let activeElement = document.activeElement;
     let role = activeElement.getAttribute('role');
@@ -17,6 +49,9 @@ function twitterInputFieldIsntFocused() {
 }
 
 function hideUnfocusedTweets() {
+    // disable
+    return;
+
     setTimeout(() => {
         let activeElement = document.activeElement;
         let role = activeElement.getAttribute('role');
@@ -43,21 +78,15 @@ function isTwitterFocusModeEnabled() {
     return document.querySelector('header').style.display === 'none';
 }
 
-function twitterEventListener(e) {
-    let activeElement = document.activeElement;
+function closeMessageWindow() {
+    if (document.querySelector('div[aria-label=Close]')) {
+        document.querySelector('div[aria-label=Close]').click();
+    }
+}
 
-    if (e.code === 'Escape') {
-        activeElement.blur();
-    } else if (e.code === 'Enter' && e.metaKey) {
-        document.querySelector("div[data-testid='nextButton']").click()
-    } else if (e.key === 'j') {
-        twitterJKey(activeElement, e);
-    } else if (e.key === 'k') {
-        twitterKKey(activeElement, e);
-    } else if (e.key === 'f' && twitterInputFieldIsntFocused()) {
-        twitterToggleFocusMode(activeElement, e);
-    } else if (e.code === 'Slash' && e.shiftKey && e.altKey) {
-        twitterShowKeyboardShortcuts();
+function clickMentionNotificationTab() {
+    if (document.querySelector("a[href='/notifications/mentions'")) {
+        document.querySelector("a[href='/notifications/mentions'").click();
     }
 }
 
@@ -71,7 +100,7 @@ function twitterShowKeyboardShortcuts() {
     );
 }
 
-function twitterJKey(activeElement, e) {
+function twitterJKey(activeElement) {
     if (isTwitterFocusModeEnabled()) {
         hideUnfocusedTweets();
     }
@@ -84,7 +113,7 @@ function twitterJKey(activeElement, e) {
     }
 }
 
-function twitterKKey(activeElement, e) {
+function twitterKKey(activeElement) {
     if (isTwitterFocusModeEnabled()) {
         hideUnfocusedTweets();
     }
@@ -95,7 +124,7 @@ function twitterKKey(activeElement, e) {
     }
 }
 
-function twitterToggleFocusMode(activeElement, e) {
+function twitterToggleFocusMode(activeElement) {
     let newVisibility = (isTwitterFocusModeEnabled()) ? 'block' : 'none';
     let newMargin = isTwitterFocusModeEnabled() ? 0 : '218px';
 

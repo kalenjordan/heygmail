@@ -24,6 +24,20 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+// Add a response interceptor
+window.axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response;
+}, function (error) {
+    if (typeof(error.response.data.error) !== 'undefined') {
+        alert(error.response.data.error);
+    } else {
+        alert("Error: " + error);
+    }
+
+    return Promise.reject(error);
+});
+
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just

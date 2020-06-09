@@ -59,6 +59,11 @@ class Util
         return env('ALGOLIA_PUBLIC_KEY');
     }
 
+    public static function algoliaPublicKeyForAdmin()
+    {
+        return env('ALGOLIA_PUBLIC_KEY_ADMIN');
+    }
+
     /**
      * @param $user User
      *
@@ -67,7 +72,7 @@ class Util
     public static function algoliaPublicKeyFor($user = null)
     {
         if (isset($user) && $user && $user->isAdmin()) {
-            return env('ALGOLIA_PUBLIC_KEY_ADMIN');
+            return self::algoliaPublicKeyForAdmin();
         }
 
         return env('ALGOLIA_PUBLIC_KEY');

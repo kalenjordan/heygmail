@@ -22,18 +22,7 @@ const app = new Vue({
 
         document.addEventListener('keydown', (e) => {
             let activeElement = document.activeElement;
-            if (e.code === 'Escape') {
-                this.successMessage = null;
-                if (activeElement.getAttribute('type') === 'search') {
-                    this.toggleSearch();
-                }
-                activeElement.blur();
-            }
-            if (e.code === 'Enter' && e.metaKey) {
-                if (document.querySelector('form')) {
-                    document.querySelector('form').submit();
-                }
-            }
+            this.hotkeys(e, activeElement);
         });
 
         this.successMessage = window.successMessage;
@@ -70,6 +59,48 @@ const app = new Vue({
         },
         clickLink(event) {
             event.target.click();
+        },
+        hotkeys(e, activeElement) {
+            if (document.querySelector('.ais-results a')) {
+                this.hotkeysSearch(e, activeElement);
+            }
+
+            if (e.code === 'Escape') {
+                this.successMessage = null;
+                if (activeElement.getAttribute('type') === 'search') {
+                    this.toggleSearch();
+                }
+                activeElement.blur();
+            }
+            if (e.code === 'Enter' && e.metaKey) {
+                if (document.querySelector('form')) {
+                    document.querySelector('form').submit();
+                }
+            }
+        },
+        hotkeysSearch(e, activeElement) {
+            let activeSearchResult = null;
+            activeSearchResult = document.querySelector('.ais-results a.active');
+            if (! activeSearchResult) {
+                let activeSearchResult = document.querySelector('.ais-results a:first-of-type');
+                activeSearchResult.classList.add('active');
+            }
+
+            if (e.code === 'Enter' && activeSearchResult) {
+                activeSearchResult.click();
+            } else if (e.code === 'ArrowDown' && activeSearchResult) {
+                let next = activeSearchResult.nextSibling;
+                if (next) {
+                    activeSearchResult.classList.remove('active');
+                    next.classList.add('active');
+                }
+            } else if (e.code === 'ArrowUp' && activeSearchResult) {
+                let next = activeSearchResult.previousSibling;
+                if (next) {
+                    activeSearchResult.classList.remove('active');
+                    next.classList.add('active');
+                }
+            }
         },
         showKeyboardShortcuts() {
             alert("" +

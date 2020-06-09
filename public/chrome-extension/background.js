@@ -1,4 +1,4 @@
-let version = 0.2;
+let version = 0.3;
 console.log("KJ Keyboard Shortcuts v" + version + " (domain: " + document.domain + ")");
 
 document.addEventListener('keydown', function (e) {

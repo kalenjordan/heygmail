@@ -16,14 +16,20 @@ function roamEventListener(e) {
         roamSelectFirstAutocompleteOption(activeElement, e);
     } else if (e.code === 'ArrowDown' && e.altKey) {
         roamSelectLastBullet(activeElement, e);
+    } else if (e.code === 'KeyD' && e.altKey) {
+        roamClickDailyLog(activeElement, e);
     }
 }
 
+function roamClickDailyLog() {
+    document.querySelector('.roam-sidebar-container .log-button').click();
+}
+
 function roamSelectLastBullet(activeElement, e) {
-    let evt = document.createEvent('MouseEvents')
+    let evt = document.createEvent('MouseEvents');
     evt.initMouseEvent('mousedown', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    document.querySelectorAll('.roam-article .roam-block-container:last-of-type .roam-block')[0].dispatchEvent(evt)
-    
+    document.querySelectorAll('.roam-article .roam-block-container:last-of-type .roam-block')[0].dispatchEvent(evt);
+
     e.preventDefault();
 }
 

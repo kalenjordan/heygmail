@@ -131,30 +131,6 @@ class AlgoliaIndex extends Command
                 'url'  => '/account/settings',
                 'name' => 'Settings',
             ],
-            [
-                'url'  => '/account/contracts',
-                'name' => 'Contracts',
-            ],
-            [
-                'url'  => '/talent',
-                'name' => 'Talent',
-            ],
-            [
-                'url'  => '/jobs',
-                'name' => 'Jobs',
-            ],
-            [
-                'url'  => '/account/talent-profile',
-                'name' => 'My Talent Profile',
-            ],
-            [
-                'url'  => '/account/client/',
-                'name' => 'My Client Profile',
-            ],
-            [
-                'url'  => '/account/client/jobs/new',
-                'name' => 'Create New Job',
-            ],
         ];
 
         $this->info("Indexing " . count($pages) . " pages");

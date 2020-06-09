@@ -26,7 +26,7 @@ class IndexController extends Controller
             "sort" => [['field' => 'Published', 'direction' => "desc"]],
         );
 
-//        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKey(), [
+//        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
 //            'filters' => 'public:true'
 //        ]);
 //        die($key);

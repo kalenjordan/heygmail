@@ -67,7 +67,7 @@ class User extends Airtable
         return [
             'url'          => $this->url(),
             'object_id'    => $this->searchIndexId(),
-            'type'         => 'blog',
+            'type'         => 'user',
             'search_title' => $this->searchTitle(),
             'name'         => $this->name(),
             'about'        => $this->about(),
