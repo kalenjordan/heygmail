@@ -17,13 +17,15 @@
     "js": [
       "twitter.js",
       "roam.js",
+      "ynab.js",
       "background.js"
     ],
     "run_at": "document_idle",
     "css": ["styles.css"],
     "matches": [
+      "https://roamresearch.com/*",
       "https://twitter.com/*",
-      "https://roamresearch.com/*"
+      "https://app.youneedabudget.com/*"
     ]
   }],
   "icons":
