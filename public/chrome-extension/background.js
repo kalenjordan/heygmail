@@ -18,3 +18,8 @@ function triggerMouseDown(selector)
     evt.initMouseEvent('mousedown', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     document.querySelectorAll(selector)[0].dispatchEvent(evt);
 }
+
+function notTyping() {
+    return document.activeElement.tagName !== 'INPUT';
+}
+

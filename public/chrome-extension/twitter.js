@@ -106,7 +106,9 @@ function twitterJKey(activeElement) {
     }
 
     if (activeElement.tagName === 'BODY') {
-        document.querySelector('div[aria-label="Timeline: Messages"] div[role=tab]').focus()
+        if (document.querySelector('div[aria-label="Timeline: Messages"] div[role=tab]')) {
+            document.querySelector('div[aria-label="Timeline: Messages"] div[role=tab]').focus()
+        }
     } else if (activeElement.tagName === 'DIV') {
         let next = activeElement.parentElement.parentElement.nextSibling.children[0].children[0];
         next.focus();
