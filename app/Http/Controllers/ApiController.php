@@ -2,13 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Screening;
 use App\Thing;
 use App\User;
 use App\Util;
 use Illuminate\Http\Request;
+use Webklex\IMAP\Client;
+use Webklex\IMAP\Message;
 
 class ApiController extends Controller
 {
+
+    /**
+     * @param Request $request
+     *
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function screenMessage(Request $request)
+    {
+        try {
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+            return $this->_screenMessage($request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function _screenMessage(Request $request)
+    {
+        // $messageId = $request->input('message');
+        $email = $request->input('email');
+        $folder = $request->input('folder');
+
+        $screening = (new Screening())->lookupWithFilter("Email = '$email'");
+        if (!$screening) {
+            $screening = (new Screening())->create([
+                'Email' => $email,
+            ]);
+        }
+
+        $screening->save([
+            'Folder' => $folder,
+        ]);
+
+        $client = new Client([
+            'host'          => Util::imapHost(),
+            'port'          => Util::imapPort(),
+            'username'      => Util::imapUsername(),
+            'password'      => Util::imapPassword(),
+            'encryption'    => 'ssl',
+            'validate_cert' => true,
+            'protocol'      => 'imap'
+        ]);
+        $client->connect();
+
+        $folderObject = $client->getFolder('To Screen');
+
+        $messages = $folderObject->query()->from($email)->get();
+        foreach ($messages as $message) {
+            /** @var Message $message */
+            $message->moveToFolder($folder);
+        }
+
+        $message = "Screened $email to $folder";
+
+        return [
+            'success' => true,
+            'message' => $message,
+        ];
+    }
 
     /**
      * @param Request $request

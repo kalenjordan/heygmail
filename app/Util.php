@@ -4,6 +4,26 @@ namespace App;
 
 class Util
 {
+    public static function imapHost()
+    {
+        return env("IMAP_HOST");
+    }
+
+    public static function imapPort()
+    {
+        return env("IMAP_PORT");
+    }
+
+    public static function imapUsername()
+    {
+        return env("IMAP_USERNAME");
+    }
+
+    public static function imapPassword()
+    {
+        return env("IMAP_PASSWORD");
+    }
+
     public static function isProduction()
     {
         return env('APP_ENV') == 'production';
