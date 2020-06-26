@@ -33,8 +33,6 @@ class ApiController extends Controller
 
     /**
      * @param Request $request
-     *
-     * @return array
      * @throws \Exception
      */
     protected function _screenMessage(Request $request)
@@ -43,7 +41,7 @@ class ApiController extends Controller
         $email = $request->input('email');
         $folder = $request->input('folder');
 
-        $screening = (new Screening())->loadByEmail($email)
+        $screening = (new Screening())->loadByEmail($email);
         if (!$screening) {
             $screening = (new Screening())->create([
                 'Email' => strtolower($email),
@@ -53,25 +51,6 @@ class ApiController extends Controller
         $screening->save([
             'Folder' => $folder,
         ]);
-
-        $client = new Client([
-            'host'          => Util::imapHost(),
-            'port'          => Util::imapPort(),
-            'username'      => Util::imapUsername(),
-            'password'      => Util::imapPassword(),
-            'encryption'    => 'ssl',
-            'validate_cert' => true,
-            'protocol'      => 'imap'
-        ]);
-        $client->connect();
-
-        $folderObject = $client->getFolder('To Screen');
-
-        $messages = $folderObject->query()->from($email)->get();
-        foreach ($messages as $message) {
-            /** @var Message $message */
-            $message->moveToFolder($folder);
-        }
 
         $message = "Screened $email to $folder";
 
