@@ -45,7 +45,7 @@ class EmailSync extends Command
      */
     public function handle()
     {
-        $oClient = new Client([
+        $client = new Client([
             'host'          => Util::imapHost(),
             'port'          => Util::imapPort(),
             'username'      => Util::imapUsername(),
@@ -55,11 +55,11 @@ class EmailSync extends Command
             'protocol'      => 'imap'
         ]);
 
-        $oClient->connect();
+        $client->connect();
 
         if ($this->option('show-folders')) {
             $this->info("Show folders");
-            $folders = $oClient->getFolders();
+            $folders = $client->getFolders();
             foreach($folders as $folder){
                 /** @var Folder $folder */
                 $this->info(" - " . $folder->name);
@@ -68,9 +68,9 @@ class EmailSync extends Command
         }
 
         /** @var \Webklex\IMAP\Support\FolderCollection $aFolder */
-        $folder = $oClient->getFolder('To Process');
+        $folder = $client->getFolder('To Process');
 
-        $messages = $folder->messages()->all()->get();
+        $messages = $folder->messages()->leaveUnread()->all()->get();
         $i = 1;
         foreach ($messages as $message) {
             /** @var Message $message */
@@ -81,6 +81,7 @@ class EmailSync extends Command
                 $folder = $screening->folder();
                 $this->info(" - Screened in ($folder)");
                 $message->moveToFolder($folder);
+                $this->markAsRead($client, $folder);
             } else {
                 $this->info(" - To Screen");
                 $message->moveToFolder('To Screen');
@@ -91,6 +92,18 @@ class EmailSync extends Command
                 break;
             }
         }
+    }
+
+    /**
+     * @param Client $client
+     * @param $folderName
+     * @throws \Webklex\IMAP\Exceptions\ConnectionFailedException
+     * @throws \Webklex\IMAP\Exceptions\GetMessagesFailedException
+     */
+    protected function markAsRead(Client $client, $folderName)
+    {
+        $folderObject = $client->getFolder($folderName);
+        $folderObject->messages()->markAsRead()->all()->get();
     }
 
     /**
