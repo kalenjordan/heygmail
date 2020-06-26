@@ -118,7 +118,7 @@ class EmailSync extends Command
         $this->info(" - Email: " . $email);
 
         /** @var Screening $screening */
-        $screening = (new Screening())->lookupWithFilter("Email = '$email'");
+        $screening = (new Screening())->loadByEmail($email);
         if (! $screening) {
             return null;
         }

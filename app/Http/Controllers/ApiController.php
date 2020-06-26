@@ -43,10 +43,10 @@ class ApiController extends Controller
         $email = $request->input('email');
         $folder = $request->input('folder');
 
-        $screening = (new Screening())->lookupWithFilter("Email = '$email'");
+        $screening = (new Screening())->loadByEmail($email)
         if (!$screening) {
             $screening = (new Screening())->create([
-                'Email' => $email,
+                'Email' => strtolower($email),
             ]);
         }
 

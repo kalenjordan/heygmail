@@ -13,4 +13,9 @@ class Screening extends Airtable
     {
         return isset($this->fields->Folder) ? $this->fields->Folder : null;
     }
+
+    public function loadByEmail($email)
+    {
+        return $this->lookupWithFilter("LOWER(Email) = LOWER('$email')");
+    }
 }
