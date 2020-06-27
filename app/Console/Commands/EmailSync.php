@@ -15,7 +15,7 @@ class EmailSync extends Command
      *
      * @var string
      */
-    protected $signature = 'email:sync {--show-folders} {--limit=3}';
+    protected $signature = 'email:sync {--limit=3} {--all} {--inbox} {--to-process} {--paper-trail} {--feed} {--screened-out}';
 
     /**
      * The console command description.
@@ -59,10 +59,25 @@ class EmailSync extends Command
 
         $client->connect();
 
-        $this->handleToProcess($client);
-        $this->handleFolder($client, 'Paper Trail');
-        $this->handleFolder($client, 'Feed');
-        $this->handleFolder($client, 'Screened Out');
+        if ($this->option('to-process') || $this->option('all')) {
+            $this->handleToProcess($client);
+        }
+
+        if ($this->option('inbox') || $this->option('all')) {
+            $this->handleFolder($client, 'INBOX');
+        }
+
+        if ($this->option('paper-trail') || $this->option('all')) {
+            $this->handleFolder($client, 'Paper Trail');
+        }
+
+        if ($this->option('feed') || $this->option('all')) {
+            $this->handleFolder($client, 'Feed');
+        }
+
+        if ($this->option('screened-out') || $this->option('all')) {
+            $this->handleFolder($client, 'Screened Out');
+        }
     }
 
     protected function handleToProcess($client)
@@ -93,11 +108,11 @@ class EmailSync extends Command
         }
     }
 
-    protected function handleFolder($client, $folder)
+    protected function handleFolder($client, $folderName)
     {
         $this->info("");
-        $this->info($folder);
-        $folder = $client->getFolder($folder);
+        $this->info($folderName);
+        $folder = $client->getFolder($folderName);
 
         $messages = $folder->messages()->all()->get();
         $i = 1;
@@ -112,10 +127,10 @@ class EmailSync extends Command
                 $from = $message->getFrom();
                 $email = $from[0]->mail;
 
-                $this->info(" - Creating screening for $email: Paper Trail");
+                $this->info(" - Creating screening for $email: $folderName");
                 (new Screening())->create([
                     'Email'  => strtolower($email),
-                    'Folder' => $folder,
+                    'Folder' => $folderName,
                 ]);
             }
 
