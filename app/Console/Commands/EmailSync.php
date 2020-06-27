@@ -6,7 +6,6 @@ use App\Screening;
 use App\Util;
 use Illuminate\Console\Command;
 use Webklex\IMAP\Client;
-use Webklex\IMAP\Folder;
 use Webklex\IMAP\Message;
 
 class EmailSync extends Command
@@ -16,7 +15,7 @@ class EmailSync extends Command
      *
      * @var string
      */
-    protected $signature = 'email:sync {--show-folders} {--limit=1}';
+    protected $signature = 'email:sync {--show-folders} {--limit=3}';
 
     /**
      * The console command description.
@@ -45,6 +44,9 @@ class EmailSync extends Command
      */
     public function handle()
     {
+        $this->info("Processing Hey Gmail");
+        $this->info(" - Limit: " . $this->limit());
+
         $client = new Client([
             'host'          => Util::imapHost(),
             'port'          => Util::imapPort(),
@@ -57,17 +59,14 @@ class EmailSync extends Command
 
         $client->connect();
 
-        if ($this->option('show-folders')) {
-            $this->info("Show folders");
-            $folders = $client->getFolders();
-            foreach($folders as $folder){
-                /** @var Folder $folder */
-                $this->info(" - " . $folder->name);
-            }
-            die();
-        }
+        $this->handleToProcess($client);
+        $this->handleFolder($client, 'Paper Trail');
+        $this->handleFolder($client, 'Feed');
+        $this->handleFolder($client, 'Screened Out');
+    }
 
-        /** @var \Webklex\IMAP\Support\FolderCollection $aFolder */
+    protected function handleToProcess($client)
+    {
         $folder = $client->getFolder('To Process');
 
         $messages = $folder->messages()->leaveUnread()->all()->get();
@@ -85,6 +84,39 @@ class EmailSync extends Command
             } else {
                 $this->info(" - To Screen");
                 $message->moveToFolder('To Screen');
+            }
+
+            $i++;
+            if ($i > $this->limit()) {
+                break;
+            }
+        }
+    }
+
+    protected function handleFolder($client, $folder)
+    {
+        $this->info("");
+        $this->info($folder);
+        $folder = $client->getFolder($folder);
+
+        $messages = $folder->messages()->all()->get();
+        $i = 1;
+        foreach ($messages as $message) {
+            /** @var Message $message */
+            $this->info("$i. Message: " . $message->subject);
+
+            $screening = $this->senderScreening($message);
+            if ($screening) {
+                $this->info(" - Already screened");
+            } else {
+                $from = $message->getFrom();
+                $email = $from[0]->mail;
+
+                $this->info(" - Creating screening for $email: Paper Trail");
+                (new Screening())->create([
+                    'Email'  => strtolower($email),
+                    'Folder' => $folder,
+                ]);
             }
 
             $i++;
@@ -119,7 +151,7 @@ class EmailSync extends Command
 
         /** @var Screening $screening */
         $screening = (new Screening())->loadByEmail($email);
-        if (! $screening) {
+        if (!$screening) {
             return null;
         }
 
