@@ -95,7 +95,9 @@ class EmailSync extends Command
                 $folder = $screening->folder();
                 $this->info(" - Screened in ($folder)");
                 $message->moveToFolder($folder);
-                $this->markAsRead($client, $folder);
+                if ($this->shouldMarkAsRead($screening)) {
+                    $this->markAsRead($client, $folder);
+                }
             } else {
                 $this->info(" - To Screen");
                 $message->moveToFolder('To Screen');
@@ -114,7 +116,7 @@ class EmailSync extends Command
         $this->info($folderName);
         $folder = $client->getFolder($folderName);
 
-        $messages = $folder->messages()->all()->get();
+        $messages = $folder->messages()->leaveUnread()->all()->get();
         $i = 1;
         foreach ($messages as $message) {
             /** @var Message $message */
@@ -151,6 +153,14 @@ class EmailSync extends Command
     {
         $folderObject = $client->getFolder($folderName);
         $folderObject->messages()->markAsRead()->all()->get();
+    }
+
+    protected function shouldMarkAsRead(Screening $screening) {
+        if ($screening->folder() == 'INBOX') {
+            return false;
+        }
+
+        return true;
     }
 
     /**
