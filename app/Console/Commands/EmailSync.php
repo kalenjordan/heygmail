@@ -15,7 +15,7 @@ class EmailSync extends Command
      *
      * @var string
      */
-    protected $signature = 'email:sync {--limit=3} {--all} {--inbox} {--to-process} {--paper-trail} {--feed} {--screened-out}';
+    protected $signature = 'email:sync {--limit=3} {--1} {--2} {--all} {--inbox} {--to-process} {--paper-trail} {--feed} {--screened-out}';
 
     /**
      * The console command description.
@@ -47,15 +47,32 @@ class EmailSync extends Command
         $this->info("Processing Hey Gmail");
         $this->info(" - Limit: " . $this->limit());
 
-        $client = new Client([
-            'host'          => Util::imapHost(),
-            'port'          => Util::imapPort(),
-            'username'      => Util::imapUsername(),
-            'password'      => Util::imapPassword(),
-            'encryption'    => 'ssl',
-            'validate_cert' => true,
-            'protocol'      => 'imap'
-        ]);
+        if ($this->option('1')) {
+            $client = new Client([
+                'host'          => Util::imapHost1(),
+                'port'          => Util::imapPort1(),
+                'username'      => Util::imapUsername1(),
+                'password'      => Util::imapPassword1(),
+                'encryption'    => 'ssl',
+                'validate_cert' => true,
+                'protocol'      => 'imap'
+            ]);
+        } elseif ($this->option('2')) {
+            $client = new Client([
+                'host'          => Util::imapHost2(),
+                'port'          => Util::imapPort2(),
+                'username'      => Util::imapUsername2(),
+                'password'      => Util::imapPassword2(),
+                'encryption'    => 'ssl',
+                'validate_cert' => true,
+                'protocol'      => 'imap'
+            ]);
+        } else {
+            $this->error("Pick --1 or --2");
+            return;
+        }
+
+        $this->info(" - Account: " . $client->username);
 
         $client->connect();
 
