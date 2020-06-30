@@ -18,7 +18,7 @@ class GmailApi extends Command
      *
      * @var string
      */
-    protected $signature = 'gmail:api {--limit=1}';
+    protected $signature = 'gmail:api {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
 
     protected $labels;
 
@@ -57,16 +57,36 @@ class GmailApi extends Command
         /** @var User $user */
         $user = (new User())->lookupWithFilter("Email = '$this->email'");
         $accessToken = $user->googleAccessToken();
+        $this->info(" - Using token: $accessToken");
 
         $client = GoogleClient::client($accessToken);
         $this->service = new Google_Service_Gmail($client);
 
+        if ($this->option('to-process') || $this->option('all')) {
+            $this->handleToProcess();
+        }
+        if ($this->option('imbox') || $this->option('all')) {
+            $this->handleFolder('*Imbox');
+        }
+        if ($this->option('screened-out') || $this->option('all')) {
+            $this->handleFolder('Screened Out');
+        }
+        if ($this->option('feed') || $this->option('all')) {
+            $this->handleFolder('Feed');
+        }
+        if ($this->option('paper-trail') || $this->option('all')) {
+            $this->handleFolder('Paper Trail');
+        }
+    }
+
+    protected function handleToProcess()
+    {
         $toProcessLabelId = $this->labelIdForName('To Process');
         $this->info(" - Looking up email with label 'To Process' ($toProcessLabelId)");
 
         $response = $this->service->users_threads->listUsersThreads($this->email, [
             'maxResults' => $this->limit(),
-            'labelIds' => [$toProcessLabelId]
+            'labelIds'   => [$toProcessLabelId]
         ]);
 
         $threads = $response->getThreads();
@@ -74,7 +94,7 @@ class GmailApi extends Command
         foreach ($threads as $thread) {
             $threadDetail = $this->service->users_threads->get($this->email, $thread->id);
 
-            $this->handleThread($i, $threadDetail);
+            $this->handleToProcessThreaad($i, $threadDetail);
             $i++;
         }
     }
@@ -82,7 +102,7 @@ class GmailApi extends Command
     /**
      * @param $threadDetail Google_Service_Gmail_Thread
      */
-    protected function handleThread($i, $threadDetail)
+    protected function handleToProcessThreaad($i, $threadDetail)
     {
         $labelIds = $this->labelsForThread($threadDetail);
         $snippet = $this->snippetForThread($threadDetail);
@@ -96,10 +116,11 @@ class GmailApi extends Command
             $folder = $screening->folder();
             $labelIdToAdd = $this->labelIdForName($folder);
             $this->info(" - Screening found: $folder");
+            $this->info(" - Moving to $folder and removing 'To Process' and Unread labels");
 
             $mods = new Google_Service_Gmail_ModifyThreadRequest();
             $mods->setAddLabelIds($labelIdToAdd);
-            $mods->setRemoveLabelIds($this->labelIdForName('To Process'));
+            $mods->setRemoveLabelIds([$this->labelIdForName('To Process'), 'UNREAD']);
             $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
         } else {
             $this->info(" - To Screen");
@@ -110,14 +131,51 @@ class GmailApi extends Command
             $mods->setRemoveLabelIds($this->labelIdForName('To Process'));
             $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
         }
+    }
 
-        // $messages = $threadDetail->getMessages();
-//            foreach ($messages as $message) {
-//                /** @var \Google_Service_Gmail_Message $message */
-//                $part = $message->getPayload();
-//
-////                $part->getHeaders()
-//            }
+    protected function handleFolder($folder)
+    {
+        $labelId = $this->labelIdForName($folder);
+        $this->info(" - Looking up email with label '$folder' ($labelId)");
+
+        $response = $this->service->users_threads->listUsersThreads($this->email, [
+            'maxResults' => $this->limit(),
+            'labelIds'   => [$labelId]
+        ]);
+
+        $threads = $response->getThreads();
+        $i = 1;
+        foreach ($threads as $thread) {
+            $threadDetail = $this->service->users_threads->get($this->email, $thread->id);
+
+            $this->handleFolderThread($folder, $i, $threadDetail);
+            $i++;
+        }
+    }
+
+    /**
+     * @param $threadDetail Google_Service_Gmail_Thread
+     */
+    protected function handleFolderThread($folder, $i, $threadDetail)
+    {
+        $labelIds = $this->labelsForThread($threadDetail);
+        $snippet = $this->snippetForThread($threadDetail);
+        $fromEmail = $this->fromEmail($threadDetail);
+        $this->info("\n$i. $snippet");
+        $this->info(" - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
+        $this->info(" - From: " . $fromEmail);
+
+        $screening = $this->senderScreening($threadDetail);
+        if ($screening) {
+            $this->info(" - Already screened");
+        } else {
+            $this->info(" - Creating screening");
+
+            (new Screening())->create([
+                'Email'  => $fromEmail,
+                'Folder' => $folder,
+            ]);
+        }
     }
 
     protected function fromEmail($threadDetail)
@@ -129,7 +187,6 @@ class GmailApi extends Command
             /** @var \Google_Service_Gmail_MessagePartHeader $header */
             if ($header->getName() == 'From') {
                 $fullFrom = $header->getValue();
-                $this->info(" - Full from: $fullFrom");
                 if (strpos($fullFrom, '<') === false) {
                     return $fullFrom;
                 }
@@ -182,7 +239,8 @@ class GmailApi extends Command
         return null;
     }
 
-    protected function snippetForThread($threadDetail) {
+    protected function snippetForThread($threadDetail)
+    {
         $messages = $threadDetail->getMessages();
         foreach ($messages as $message) {
             /** @var \Google_Service_Gmail_Message $message */
