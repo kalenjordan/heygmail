@@ -29,7 +29,7 @@ class AuthController extends Controller
         return Socialite::driver('google')
             ->scopes([
                 \Google_Service_Gmail::GMAIL_SETTINGS_BASIC,
-                \Google_Service_Gmail::GMAIL_READONLY,
+                \Google_Service_Gmail::GMAIL_MODIFY,
             ])
             ->redirect();
     }

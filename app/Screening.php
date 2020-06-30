@@ -2,7 +2,7 @@
 
 namespace App;
 
-use GrahamCampbell\Markdown\Facades\Markdown;
+use Google_Service_Gmail_Thread;
 
 class Screening extends Airtable
 {
@@ -14,8 +14,35 @@ class Screening extends Airtable
         return isset($this->fields->Folder) ? $this->fields->Folder : null;
     }
 
+    public function email()
+    {
+        return isset($this->fields->Email) ? $this->fields->Email : null;
+    }
+
+    public function messageIdFilter()
+    {
+        return isset($this->fields->{'Message ID Filter'}) ? $this->fields->{'Message ID Filter'} : null;
+    }
+
     public function loadByEmail($email)
     {
-        return $this->lookupWithFilter("LOWER(Email) = LOWER('$email')");
+        return $this->lookupWithFilter("AND(
+            LOWER(Email) = LOWER('$email'),
+            Pattern = 0
+        )");
+    }
+
+    public function matchesThread($email, $subject, $messageId)
+    {
+        $emailPattern = $this->email();
+        if (!preg_match('/' . $emailPattern . '/', $email)) {
+            return false;
+        }
+
+        if ($this->messageIdFilter() && !preg_match('/' . $this->messageIdFilter() . '/', $messageId)) {
+            return false;
+        }
+
+        return true;
     }
 }

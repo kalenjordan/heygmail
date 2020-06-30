@@ -3,9 +3,13 @@
 namespace App\Console\Commands;
 
 use App\GoogleClient;
+use App\Screening;
 use App\User;
+use App\Util;
 use Illuminate\Console\Command;
 use Google_Service_Gmail;
+use Google_Service_Gmail_Thread;
+use Google_Service_Gmail_ModifyThreadRequest;
 
 class GmailApi extends Command
 {
@@ -14,7 +18,14 @@ class GmailApi extends Command
      *
      * @var string
      */
-    protected $signature = 'gmail:api';
+    protected $signature = 'gmail:api {--limit=1}';
+
+    protected $labels;
+
+    /** @var Google_Service_Gmail */
+    protected $service;
+
+    protected $email;
 
     /**
      * The console command description.
@@ -33,25 +44,219 @@ class GmailApi extends Command
         parent::__construct();
     }
 
+    protected function limit()
+    {
+        return ($this->option('limit') ? $this->option('limit') : 1);
+    }
+
     public function handle()
     {
+        $this->email = Util::imapUsername2();
+        $this->info("Processing gmail: $this->email");
+
         /** @var User $user */
-        $user = (new User())->lookupWithFilter("Email = 'kalenj@gmail.com'");
+        $user = (new User())->lookupWithFilter("Email = '$this->email'");
         $accessToken = $user->googleAccessToken();
 
         $client = GoogleClient::client($accessToken);
-        $service = new Google_Service_Gmail($client);
-        $response = $service->users_messages->listUsersMessages($user->email(), [
-            'q'          => 'test',
-            'maxResults' => 2,
+        $this->service = new Google_Service_Gmail($client);
+
+        $toProcessLabelId = $this->labelIdForName('To Process');
+        $this->info(" - Looking up email with label 'To Process' ($toProcessLabelId)");
+
+        $response = $this->service->users_threads->listUsersThreads($this->email, [
+            'maxResults' => $this->limit(),
+            'labelIds' => [$toProcessLabelId]
         ]);
 
-        $messages = $response->getMessages();
+        $threads = $response->getThreads();
         $i = 1;
-        foreach ($messages as $message) {
-            $messageDetail = $service->users_messages->get($user->email(), $message->id);
-            $this->info("$i. " . $messageDetail->snippet);
+        foreach ($threads as $thread) {
+            $threadDetail = $this->service->users_threads->get($this->email, $thread->id);
+
+            $this->handleThread($i, $threadDetail);
             $i++;
         }
+    }
+
+    /**
+     * @param $threadDetail Google_Service_Gmail_Thread
+     */
+    protected function handleThread($i, $threadDetail)
+    {
+        $labelIds = $this->labelsForThread($threadDetail);
+        $snippet = $this->snippetForThread($threadDetail);
+        $fromEmail = $this->fromEmail($threadDetail);
+        $this->info("\n$i. $snippet");
+        $this->info(" - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
+        $this->info(" - From: " . $fromEmail);
+
+        $screening = $this->senderScreening($threadDetail);
+        if ($screening) {
+            $folder = $screening->folder();
+            $labelIdToAdd = $this->labelIdForName($folder);
+            $this->info(" - Screening found: $folder");
+
+            $mods = new Google_Service_Gmail_ModifyThreadRequest();
+            $mods->setAddLabelIds($labelIdToAdd);
+            $mods->setRemoveLabelIds($this->labelIdForName('To Process'));
+            $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
+        } else {
+            $this->info(" - To Screen");
+
+            $mods = new Google_Service_Gmail_ModifyThreadRequest();
+            $labelIdToAdd = $this->labelIdForName('To Screen');
+            $mods->setAddLabelIds($labelIdToAdd);
+            $mods->setRemoveLabelIds($this->labelIdForName('To Process'));
+            $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
+        }
+
+        // $messages = $threadDetail->getMessages();
+//            foreach ($messages as $message) {
+//                /** @var \Google_Service_Gmail_Message $message */
+//                $part = $message->getPayload();
+//
+////                $part->getHeaders()
+//            }
+    }
+
+    protected function fromEmail($threadDetail)
+    {
+        $messages = $threadDetail->getMessages();
+        /** @var \Google_Service_Gmail_Message $message */
+        $message = $messages[0];
+        foreach ($message->getPayload()->getHeaders() as $header) {
+            /** @var \Google_Service_Gmail_MessagePartHeader $header */
+            if ($header->getName() == 'From') {
+                $fullFrom = $header->getValue();
+                $this->info(" - Full from: $fullFrom");
+                if (strpos($fullFrom, '<') === false) {
+                    return $fullFrom;
+                }
+
+                preg_match('/<(.*)>/', $fullFrom, $output);
+                return $output[1];
+            }
+        }
+
+        return null;
+    }
+
+    protected function subject($threadDetail)
+    {
+        $messages = $threadDetail->getMessages();
+        /** @var \Google_Service_Gmail_Message $message */
+        $message = $messages[0];
+        foreach ($message->getPayload()->getHeaders() as $header) {
+            /** @var \Google_Service_Gmail_MessagePartHeader $header */
+            if ($header->getName() == 'Subject') {
+                return $header->getValue();
+            }
+        }
+
+        return null;
+    }
+
+    protected function messageId($threadDetail)
+    {
+        $messages = $threadDetail->getMessages();
+        /** @var \Google_Service_Gmail_Message $message */
+        $message = $messages[0];
+        foreach ($message->getPayload()->getHeaders() as $header) {
+            /** @var \Google_Service_Gmail_MessagePartHeader $header */
+            if ($header->getName() == 'Message-Id') {
+                return $header->getValue();
+            }
+        }
+
+        return null;
+    }
+
+    protected function labelsForThread($threadDetail)
+    {
+        $messages = $threadDetail->getMessages();
+        foreach ($messages as $message) {
+            return $message->getLabelIds();
+        }
+
+        return null;
+    }
+
+    protected function snippetForThread($threadDetail) {
+        $messages = $threadDetail->getMessages();
+        foreach ($messages as $message) {
+            /** @var \Google_Service_Gmail_Message $message */
+            return $message->getSnippet();
+        }
+
+        return null;
+    }
+
+    protected function labels()
+    {
+        if (isset($this->labels)) {
+            return $this->labels;
+        }
+
+        $labels = $this->service->users_labels->listUsersLabels($this->email);
+        foreach ($labels as $label) {
+            $labelDetail = $this->service->users_labels->get($this->email, $label->id);
+            $labelDetail->getId();
+            $this->labels[$labelDetail->getId()] = $labelDetail->getName();
+        }
+
+        return $this->labels;
+    }
+
+    protected function labelIdsToNames($labelIds)
+    {
+        $labels = $this->labels();
+        $names = [];
+        foreach ($labelIds as $labelId) {
+            $names[] = $labels[$labelId];
+        }
+
+        return $names;
+    }
+
+    protected function labelIdForName($name)
+    {
+        $labels = $this->labels();
+        foreach ($labels as $labelId => $labelName) {
+            if ($labelName == $name) {
+                return $labelId;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $email
+     * @param $threadDetail Google_Service_Gmail_Thread
+     * @return Screening|null
+     */
+    protected function senderScreening($threadDetail)
+    {
+        $email = $this->fromEmail($threadDetail);
+        $subject = $this->subject($threadDetail);
+        $messageId = $this->messageId($threadDetail);
+
+        $this->info(" - Email: " . $email);
+
+        $screening = (new Screening())->loadByEmail($email);
+        if ($screening) {
+            return $screening;
+        }
+
+        $screenings = (new Screening())->recordsWithFilter("Pattern = 1");
+        foreach ($screenings as $screening) {
+            /** @var Screening $screening */
+            if ($screening->matchesThread($email, $subject, $messageId)) {
+                return $screening;
+            }
+        }
+
+        return null;
     }
 }
