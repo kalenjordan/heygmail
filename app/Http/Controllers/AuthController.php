@@ -26,7 +26,12 @@ class AuthController extends Controller
             $request->session()->put('redirect', $request->input('redirect'));
         }
 
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->scopes([
+                \Google_Service_Gmail::GMAIL_SETTINGS_BASIC,
+                \Google_Service_Gmail::GMAIL_READONLY,
+            ])
+            ->redirect();
     }
 
     public function logout(Request $request)
@@ -64,6 +69,10 @@ class AuthController extends Controller
                 ],
             ]);
         }
+
+        $user->save([
+            'Google Access Token' => $socialiteUser->token
+        ]);
 
         $request->session()->put('user', $user);
 

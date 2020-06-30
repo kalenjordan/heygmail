@@ -4,6 +4,26 @@ namespace App;
 
 class Util
 {
+    public static function googleAppName()
+    {
+        return env('GOOGLE_APP_NAME');
+    }
+
+    public static function googleClientId()
+    {
+        return env('GOOGLE_CLIENT_ID');
+    }
+
+    public static function googleClientSecret()
+    {
+        return env('GOOGLE_CLIENT_SECRET');
+    }
+
+    public static function googleRedirect()
+    {
+        return env('GOOGLE_REDIRECT');
+    }
+
     public static function imapHost1()
     {
         return env("IMAP1_HOST");

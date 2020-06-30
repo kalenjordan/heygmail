@@ -12,6 +12,11 @@ class User extends Airtable
         return isset($this->fields->{'Email'}) ? $this->fields->{'Email'} : null;
     }
 
+    public function googleAccessToken()
+    {
+        return isset($this->fields->{'Google Access Token'}) ? $this->fields->{'Google Access Token'} : null;
+    }
+
     public function name()
     {
         return isset($this->fields->{'Name'}) ? $this->fields->{'Name'} : null;
