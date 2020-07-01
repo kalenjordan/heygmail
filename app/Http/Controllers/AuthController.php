@@ -27,6 +27,10 @@ class AuthController extends Controller
         }
 
         return Socialite::driver('google')
+            ->with([
+                "access_type" => "offline",
+                "prompt"      => "consent select_account"
+            ])
             ->scopes([
                 \Google_Service_Gmail::GMAIL_SETTINGS_BASIC,
                 \Google_Service_Gmail::GMAIL_MODIFY,

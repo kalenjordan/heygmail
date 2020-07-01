@@ -18,7 +18,7 @@ class GmailApi extends Command
      *
      * @var string
      */
-    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
+    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process=1} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
 
     protected $labels;
 
@@ -55,12 +55,16 @@ class GmailApi extends Command
         $filter = "";
         if ($this->option('email')) {
             $this->info(" - Filter: " . $this->option('email'));
-            $filter = "Email = '" . $this->option('email') . "'";
+            $filter = "FIND('" . $this->option('email') . "', Email) > 0";
         }
 
         $users = (new User())->recordsWithFilter($filter);
         foreach ($users as $user) {
-            $this->handleUser($user);
+            try {
+                $this->handleUser($user);
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
         }
     }
 
@@ -73,7 +77,7 @@ class GmailApi extends Command
         $user = (new User())->lookupWithFilter("Email = '$this->email'");
         $accessToken = $user->googleAccessToken();
 
-        $client = GoogleClient::client($accessToken);
+        $client = GoogleClient::client($user);
         $this->service = new Google_Service_Gmail($client);
 
         if ($this->option('to-process') || $this->option('all')) {
@@ -121,8 +125,9 @@ class GmailApi extends Command
     {
         $labelIds = $this->labelsForThread($threadDetail);
         $snippet = $this->snippetForThread($threadDetail);
+        $subject = $this->subject($threadDetail);
         $fromEmail = $this->fromEmail($threadDetail);
-        $this->info("\n  $i. $snippet");
+        $this->info("\n  $i. $subject ($snippet)");
         $this->info("   - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
         $this->info("   - From: " . $fromEmail);
 
