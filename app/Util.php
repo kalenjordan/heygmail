@@ -4,6 +4,16 @@ namespace App;
 
 class Util
 {
+    public static function extractEmail($fullFromLine)
+    {
+        if (strpos($fullFromLine, '<') === false) {
+            return $fullFromLine;
+        }
+
+        preg_match('/<(.*)>/', $fullFromLine, $output);
+        return $output[1];
+    }
+
     public static function googleAppName()
     {
         return env('GOOGLE_APP_NAME');

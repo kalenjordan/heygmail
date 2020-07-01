@@ -18,7 +18,7 @@ class GmailApi extends Command
      *
      * @var string
      */
-    protected $signature = 'gmail:api {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
+    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
 
     protected $labels;
 
@@ -51,13 +51,27 @@ class GmailApi extends Command
 
     public function handle()
     {
-        $this->email = Util::imapUsername2();
-        $this->info("Processing gmail: $this->email");
+        $this->info("Processing Gmail");
+        $filter = "";
+        if ($this->option('email')) {
+            $this->info(" - Filter: " . $this->option('email'));
+            $filter = "Email = '" . $this->option('email') . "'";
+        }
+
+        $users = (new User())->recordsWithFilter($filter);
+        foreach ($users as $user) {
+            $this->handleUser($user);
+        }
+    }
+
+    protected function handleUser(User $user)
+    {
+        $this->email = $user->email();
+        $this->info("\nUser: $this->email");
 
         /** @var User $user */
         $user = (new User())->lookupWithFilter("Email = '$this->email'");
         $accessToken = $user->googleAccessToken();
-        $this->info(" - Using token: $accessToken");
 
         $client = GoogleClient::client($accessToken);
         $this->service = new Google_Service_Gmail($client);
@@ -82,7 +96,8 @@ class GmailApi extends Command
     protected function handleToProcess()
     {
         $toProcessLabelId = $this->labelIdForName('To Process');
-        $this->info(" - Looking up email with label 'To Process' ($toProcessLabelId)");
+
+        $this->info("\nTo Process:");
 
         $response = $this->service->users_threads->listUsersThreads($this->email, [
             'maxResults' => $this->limit(),
@@ -107,23 +122,23 @@ class GmailApi extends Command
         $labelIds = $this->labelsForThread($threadDetail);
         $snippet = $this->snippetForThread($threadDetail);
         $fromEmail = $this->fromEmail($threadDetail);
-        $this->info("\n$i. $snippet");
-        $this->info(" - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
-        $this->info(" - From: " . $fromEmail);
+        $this->info("\n  $i. $snippet");
+        $this->info("   - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
+        $this->info("   - From: " . $fromEmail);
 
         $screening = $this->senderScreening($threadDetail);
         if ($screening) {
             $folder = $screening->folder();
             $labelIdToAdd = $this->labelIdForName($folder);
-            $this->info(" - Screening found: $folder");
-            $this->info(" - Moving to $folder and removing 'To Process' and Unread labels");
+            $this->info("   - Screening found: $folder");
+            $this->info("   - Moving to $folder and removing 'To Process' and Unread labels");
 
             $mods = new Google_Service_Gmail_ModifyThreadRequest();
             $mods->setAddLabelIds($labelIdToAdd);
             $mods->setRemoveLabelIds([$this->labelIdForName('To Process'), 'UNREAD']);
             $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
         } else {
-            $this->info(" - To Screen");
+            $this->info("   - To Screen");
 
             $mods = new Google_Service_Gmail_ModifyThreadRequest();
             $labelIdToAdd = $this->labelIdForName('To Screen');
@@ -136,7 +151,7 @@ class GmailApi extends Command
     protected function handleFolder($folder)
     {
         $labelId = $this->labelIdForName($folder);
-        $this->info(" - Looking up email with label '$folder' ($labelId)");
+        $this->info("\n$folder:");
 
         $response = $this->service->users_threads->listUsersThreads($this->email, [
             'maxResults' => $this->limit(),
@@ -160,16 +175,17 @@ class GmailApi extends Command
     {
         $labelIds = $this->labelsForThread($threadDetail);
         $snippet = $this->snippetForThread($threadDetail);
+        $subject = $this->subject($threadDetail);
         $fromEmail = $this->fromEmail($threadDetail);
-        $this->info("\n$i. $snippet");
-        $this->info(" - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
-        $this->info(" - From: " . $fromEmail);
+        $this->info("\n  $i. $subject ($snippet)");
+        $this->info("   - Labels: " . implode(", ", $this->labelIdsToNames($labelIds)));
+        $this->info("   - From: " . $fromEmail);
 
         $screening = $this->senderScreening($threadDetail);
         if ($screening) {
-            $this->info(" - Already screened");
+            $this->info("   - Already screened");
         } else {
-            $this->info(" - Creating screening");
+            $this->info("   - Creating screening");
 
             (new Screening())->create([
                 'Email'  => $fromEmail,
@@ -181,18 +197,14 @@ class GmailApi extends Command
     protected function fromEmail($threadDetail)
     {
         $messages = $threadDetail->getMessages();
+
         /** @var \Google_Service_Gmail_Message $message */
         $message = $messages[0];
         foreach ($message->getPayload()->getHeaders() as $header) {
             /** @var \Google_Service_Gmail_MessagePartHeader $header */
             if ($header->getName() == 'From') {
                 $fullFrom = $header->getValue();
-                if (strpos($fullFrom, '<') === false) {
-                    return $fullFrom;
-                }
-
-                preg_match('/<(.*)>/', $fullFrom, $output);
-                return $output[1];
+                return Util::extractEmail($fullFrom);
             }
         }
 
@@ -300,7 +312,7 @@ class GmailApi extends Command
         $subject = $this->subject($threadDetail);
         $messageId = $this->messageId($threadDetail);
 
-        $this->info(" - Email: " . $email);
+        $this->info("   - Email: " . $email);
 
         $screening = (new Screening())->loadByEmail($email);
         if ($screening) {
