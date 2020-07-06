@@ -90,7 +90,7 @@ class GmailApi extends Command
             $this->handleToProcess();
         }
         if ($this->option('imbox') || $this->option('all')) {
-            $this->handleFolder('*Imbox');
+            $this->handleFolder('Imbox');
         }
         if ($this->option('screened-out') || $this->option('all')) {
             $this->handleFolder('Screened Out');
