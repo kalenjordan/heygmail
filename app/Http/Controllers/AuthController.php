@@ -75,7 +75,8 @@ class AuthController extends Controller
         }
 
         $user->save([
-            'Google Access Token' => $socialiteUser->token
+            'Google Access Token' => $socialiteUser->token,
+            'Google Refresh Token' => $socialiteUser->refreshToken,
         ]);
 
         $request->session()->put('user', $user);

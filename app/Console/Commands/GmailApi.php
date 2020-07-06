@@ -18,7 +18,7 @@ class GmailApi extends Command
      *
      * @var string
      */
-    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process=1} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
+    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
 
     protected $labels;
 
@@ -55,6 +55,7 @@ class GmailApi extends Command
         $filter = "";
         if ($this->option('email')) {
             $this->info(" - Filter: " . $this->option('email'));
+            $this->info(" - Limit: " . $this->limit());
             $filter = "FIND('" . $this->option('email') . "', Email) > 0";
         }
 
@@ -63,7 +64,12 @@ class GmailApi extends Command
             try {
                 $this->handleUser($user);
             } catch (\Exception $e) {
-                $this->error($e->getMessage());
+                if (strpos($e->getMessage(), "invalid authentication") !== false) {
+                    $this->info(" - Refreshing access token");
+                    $client = GoogleClient::refreshToken($user);
+                    $this->service = new Google_Service_Gmail($client);
+                    $this->handleUser($user);
+                }
             }
         }
     }
@@ -155,12 +161,14 @@ class GmailApi extends Command
 
     protected function handleFolder($folder)
     {
-        $labelId = $this->labelIdForName($folder);
         $this->info("\n$folder:");
+        $labelName = str_replace(" ", "-", strtolower($folder));
+        $query = "label:$labelName -label:p";
+        $this->info(" - Query: $query");
 
         $response = $this->service->users_threads->listUsersThreads($this->email, [
             'maxResults' => $this->limit(),
-            'labelIds'   => [$labelId]
+            'q'          => $query,
         ]);
 
         $threads = $response->getThreads();
@@ -197,6 +205,13 @@ class GmailApi extends Command
                 'Folder' => $folder,
             ]);
         }
+
+        $labelIdToAdd = $this->labelIdForName('p');
+        $this->info("   - Applying label 'p'");
+
+        $mods = new Google_Service_Gmail_ModifyThreadRequest();
+        $mods->setAddLabelIds($labelIdToAdd);
+        $this->service->users_threads->modify($this->email, $threadDetail->id, $mods);
     }
 
     protected function fromEmail($threadDetail)
