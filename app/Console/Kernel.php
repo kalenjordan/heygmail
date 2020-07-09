@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('gmail:api --all --limit=5')
-            ->everyMinute();
+//        $schedule->command('gmail:api --all --limit=5')
+//            ->everyMinute();
     }
 
     /**

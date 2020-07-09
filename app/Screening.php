@@ -24,6 +24,11 @@ class Screening extends Airtable
         return isset($this->fields->{'Message ID Filter'}) ? $this->fields->{'Message ID Filter'} : null;
     }
 
+    public function subjectPattern()
+    {
+        return isset($this->fields->{'Subject Pattern'}) ? $this->fields->{'Subject Pattern'} : null;
+    }
+
     public function loadByEmail($email)
     {
         return $this->lookupWithFilter("AND(
@@ -40,6 +45,10 @@ class Screening extends Airtable
         }
 
         if ($this->messageIdFilter() && !preg_match('/' . $this->messageIdFilter() . '/', $messageId)) {
+            return false;
+        }
+
+        if ($this->subjectPattern() && !preg_match('/' . $this->subjectPattern() . '/', $subject)) {
             return false;
         }
 

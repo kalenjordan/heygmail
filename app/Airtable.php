@@ -22,6 +22,11 @@ class Airtable
         return isset($this->id) ? $this->id : null;
     }
 
+    public function name()
+    {
+        return isset($this->fields->Name) ? $this->fields->Name : null;
+    }
+
     /**
      * @return \TANIOS\Airtable\Airtable
      * @throws \Exception

@@ -6,19 +6,18 @@ use App\GoogleClient;
 use App\Screening;
 use App\User;
 use App\Util;
-use Illuminate\Console\Command;
 use Google_Service_Gmail;
 use Google_Service_Gmail_Thread;
 use Google_Service_Gmail_ModifyThreadRequest;
 
-class GmailApi extends Command
+class GmailApi extends AbstractCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'gmail:api {--email=} {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
+    protected $signature = 'gmail:api {--silent} {--email=} {--limit=1} {--to-process} {--screened-out} {--imbox} {--feed} {--paper-trail} {--all}';
 
     protected $labels;
 
@@ -119,7 +118,7 @@ class GmailApi extends Command
         foreach ($threads as $thread) {
             $threadDetail = $this->service->users_threads->get($this->email, $thread->id);
 
-            $this->handleToProcessThreaad($i, $threadDetail);
+            $this->handleToProcessThread($i, $threadDetail);
             $i++;
         }
     }
@@ -127,7 +126,7 @@ class GmailApi extends Command
     /**
      * @param $threadDetail Google_Service_Gmail_Thread
      */
-    protected function handleToProcessThreaad($i, $threadDetail)
+    protected function handleToProcessThread($i, $threadDetail)
     {
         $labelIds = $this->labelsForThread($threadDetail);
         $snippet = $this->snippetForThread($threadDetail);
@@ -141,7 +140,7 @@ class GmailApi extends Command
         if ($screening) {
             $folder = $screening->folder();
             $labelIdToAdd = $this->labelIdForName($folder);
-            $this->info("   - Screening found: $folder");
+            $this->info("   - Screening found: " . $screening->name());
             $this->info("   - Moving to $folder and removing 'To Process' and Unread labels");
 
             $mods = new Google_Service_Gmail_ModifyThreadRequest();
