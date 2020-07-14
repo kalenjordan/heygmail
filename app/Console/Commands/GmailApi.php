@@ -80,7 +80,6 @@ class GmailApi extends AbstractCommand
 
         /** @var User $user */
         $user = (new User())->lookupWithFilter("Email = '$this->email'");
-        $accessToken = $user->googleAccessToken();
 
         $client = GoogleClient::client($user);
         $this->service = new Google_Service_Gmail($client);
