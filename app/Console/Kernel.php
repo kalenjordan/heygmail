@@ -28,10 +28,14 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes();
         $schedule->command('gmail:api --email=gmail --imbox --limit=10 --silent')
             ->everyMinute();
-//        $schedule->command('gmail:api --email=commercehero --all --limit=10 --silent')
-//            ->everyFiveMinutes();
-//        $schedule->command('gmail:api --email=commercehero --imbox --limit=10 --silent')
-//            ->everyMinute();
+
+        // Doing them separate because there seems to be a bug when 2 accounts
+        // run in a single command session. Must not be initializing the client right
+        // in between users in the foreach.
+        $schedule->command('gmail:api --email=commercehero --all --limit=10 --silent')
+            ->everyFiveMinutes();
+        $schedule->command('gmail:api --email=commercehero --imbox --limit=10 --silent')
+            ->everyMinute();
     }
 
     /**
