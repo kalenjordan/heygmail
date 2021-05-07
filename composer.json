@@ -14,7 +14,7 @@
         "fideloper/proxy": "^4.0",
         "google/apiclient": "^2.0",
         "graham-campbell/markdown": "^11.2",
-        "laravel/framework": "5.7.*",
+        "laravel/framework": "6.18.*",
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^1.0",
         "sleiman/airtable-php": "^2.3",
